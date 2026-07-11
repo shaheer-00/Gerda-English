@@ -1,0 +1,118 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Quicksand', 'Nunito', sans-serif;
+  background: linear-gradient(135deg, #fdf2f8 0%, #faf5ff 50%, #f0fdfa 100%);
+  min-height: 100vh;
+  color: #4a4a6a;
+  overflow-x: hidden;
+}
+
+#root {
+  min-height: 100vh;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #fce7f3;
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, #f9a8d4, #d8b4fe);
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(180deg, #f472b6, #c084fc);
+}
+
+/* Cute button styles */
+.btn-cute {
+  @apply px-6 py-3 rounded-2xl font-bold transition-all duration-300 transform hover:scale-105 active:scale-95 shadow-lg;
+}
+
+.btn-primary {
+  @apply bg-gradient-to-r from-cute-pink-400 to-cute-purple-400 text-white hover:from-cute-pink-500 hover:to-cute-purple-500;
+}
+
+.btn-secondary {
+  @apply bg-gradient-to-r from-cute-mint-400 to-cute-blue-400 text-white hover:from-cute-mint-500 hover:to-cute-blue-500;
+}
+
+/* Card styles */
+.card-cute {
+  @apply bg-white/80 backdrop-blur-sm rounded-3xl shadow-xl p-6 border-2 border-cute-pink-100;
+}
+
+/* Input styles */
+.input-cute {
+  @apply w-full px-4 py-3 rounded-2xl border-2 border-cute-pink-200 focus:border-cute-pink-400 focus:outline-none focus:ring-4 focus:ring-cute-pink-100 transition-all duration-300 bg-white/90;
+}
+
+/* Floating animation for decorative elements */
+@keyframes float {
+  0%, 100% { transform: translateY(0px) rotate(0deg); }
+  50% { transform: translateY(-10px) rotate(5deg); }
+}
+
+.float-animation {
+  animation: float 3s ease-in-out infinite;
+}
+
+/* Sparkle effect */
+.sparkle {
+  position: relative;
+}
+
+.sparkle::after {
+  content: '✨';
+  position: absolute;
+  top: -10px;
+  right: -10px;
+  font-size: 1rem;
+  animation: sparkle 1.5s ease-in-out infinite;
+}
+
+@keyframes sparkle {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.5; transform: scale(1.2); }
+}
+
+/* Progress bar */
+.progress-cute {
+  @apply h-4 rounded-full overflow-hidden bg-cute-pink-100;
+}
+
+.progress-fill {
+  @apply h-full rounded-full transition-all duration-500 ease-out;
+}
+
+/* Badge styles */
+.badge-cute {
+  @apply inline-flex items-center px-3 py-1 rounded-full text-sm font-bold;
+}
+
+.badge-pink {
+  @apply bg-cute-pink-100 text-cute-pink-700;
+}
+
+.badge-purple {
+  @apply bg-cute-purple-100 text-cute-purple-700;
+}
+
+.badge-mint {
+  @apply bg-cute-mint-100 text-cute-mint-700;
+}
