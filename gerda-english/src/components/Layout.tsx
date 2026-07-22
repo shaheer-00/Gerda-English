@@ -1,12 +1,25 @@
 import { useState, useEffect } from 'react';
 import { Outlet, Link, useLocation } from 'react-router-dom';
-import { BookOpen, Calendar, Star, Trophy, Gift, Settings, Home, Book, XCircle } from 'lucide-react';
+import { BookOpen, Calendar, Trophy, Gift, Settings, Home, Book, XCircle } from 'lucide-react';
+import { getUserProgress } from '../lib/db';
 
 const Layout = () => {
   const location = useLocation();
-  const [xp, setXp] = useState(1250);
-  const [level, setLevel] = useState(5);
-  const [streak, setStreak] = useState(7);
+  const [xp, setXp] = useState(0);
+  const [level, setLevel] = useState(1);
+  const [streak, setStreak] = useState(0);
+
+  useEffect(() => {
+    getUserProgress()
+      .then((progress) => {
+        if (progress) {
+          setXp(progress.total_xp);
+          setLevel(progress.level);
+          setStreak(progress.streak);
+        }
+      })
+      .catch((err) => console.error('Failed to load progress:', err));
+  }, [location.pathname]);
 
   const menuItems = [
     { path: '/', icon: Home, label: 'Home', color: 'from-cute-pink-400 to-cute-purple-400' },
@@ -19,9 +32,7 @@ const Layout = () => {
 
   return (
     <div className="min-h-screen flex">
-      {/* Sidebar Navigation - Tablet Optimized */}
       <aside className="w-64 bg-white/90 backdrop-blur-sm border-r-2 border-cute-pink-100 p-6 flex flex-col">
-        {/* Logo */}
         <div className="mb-8 text-center">
           <h1 className="text-3xl font-bold font-cute bg-gradient-to-r from-cute-pink-400 to-cute-purple-400 bg-clip-text text-transparent">
             🌸 Gerda English
@@ -29,14 +40,13 @@ const Layout = () => {
           <p className="text-sm text-cute-pink-600 mt-1">Let's learn together! 💕</p>
         </div>
 
-        {/* User Stats */}
         <div className="card-cute mb-6">
           <div className="flex items-center justify-between mb-3">
             <span className="text-lg font-bold">Level {level}</span>
             <Trophy className="w-6 h-6 text-yellow-400" />
           </div>
           <div className="progress-cute mb-2">
-            <div 
+            <div
               className="progress-fill bg-gradient-to-r from-cute-pink-400 to-cute-purple-400"
               style={{ width: `${(xp % 1000) / 10}%` }}
             />
@@ -48,7 +58,6 @@ const Layout = () => {
           </div>
         </div>
 
-        {/* Navigation Menu */}
         <nav className="flex-1 space-y-3">
           {menuItems.map((item) => {
             const Icon = item.icon;
@@ -70,7 +79,6 @@ const Layout = () => {
           })}
         </nav>
 
-        {/* Admin Link */}
         <Link
           to="/admin"
           className="flex items-center gap-3 px-4 py-3 rounded-2xl text-gray-600 hover:bg-cute-purple-50 transition-all duration-300 mt-auto"
@@ -80,7 +88,6 @@ const Layout = () => {
         </Link>
       </aside>
 
-      {/* Main Content Area */}
       <main className="flex-1 p-8 overflow-y-auto">
         <Outlet />
       </main>
