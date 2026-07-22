@@ -116,3 +116,44 @@ body {
 .badge-mint {
   @apply bg-cute-mint-100 text-cute-mint-700;
 }
+
+/* Warm Cozy Notebook theme — used only by Course pages, additive to the cute-* theme above */
+.card-warm {
+  @apply bg-white rounded-2xl shadow-md p-6 border border-warm-tan-200;
+}
+
+.btn-warm {
+  @apply px-6 py-3 rounded-xl font-semibold transition-all duration-200 shadow-sm;
+}
+
+.btn-warm-primary {
+  @apply bg-warm-terracotta-500 text-white hover:bg-warm-terracotta-600;
+}
+
+.btn-warm-secondary {
+  @apply bg-warm-sage-500 text-white hover:bg-warm-sage-600;
+}
+
+.input-warm {
+  @apply w-full px-4 py-3 rounded-xl border border-warm-tan-300 focus:border-warm-terracotta-400 focus:outline-none focus:ring-2 focus:ring-warm-terracotta-100 transition-all duration-200 bg-white;
+}
+
+.progress-warm {
+  @apply h-3 rounded-full overflow-hidden bg-warm-tan-100;
+}
+
+.progress-warm-fill {
+  @apply h-full rounded-full transition-all duration-500 ease-out bg-warm-terracotta-500;
+}
+
+.badge-warm {
+  @apply inline-flex items-center px-3 py-1 rounded-full text-sm font-semibold;
+}
+
+.badge-warm-terracotta {
+  @apply bg-warm-terracotta-100 text-warm-terracotta-700;
+}
+
+.badge-warm-sage {
+  @apply bg-warm-sage-100 text-warm-sage-700;
+}
