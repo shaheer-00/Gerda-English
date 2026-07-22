@@ -5,6 +5,9 @@ node_modules/
 dist/
 build/
 target/
+*.tsbuildinfo
+gerda-english/vite.config.js
+gerda-english/vite.config.d.ts
 
 # Environment variables
 .env
