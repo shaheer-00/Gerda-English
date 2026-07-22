@@ -88,9 +88,20 @@ export async function getQuizzes(): Promise<Quiz[]> {
     .from('quizzes')
     .select('*')
     .order('created_at', { ascending: false });
-  
+
   if (error) throw error;
   return data || [];
+}
+
+export async function getQuizById(id: string): Promise<Quiz | null> {
+  const { data, error } = await supabase
+    .from('quizzes')
+    .select('*')
+    .eq('id', id)
+    .single();
+
+  if (error && error.code !== 'PGRST116') throw error;
+  return data;
 }
 
 export async function createQuiz(quiz: Partial<Quiz>): Promise<Quiz> {

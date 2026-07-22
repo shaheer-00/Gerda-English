@@ -1,0 +1,8 @@
+-- IELTS Course checkpoint quizzes
+-- Run this in Supabase's SQL Editor AFTER supabase-schema.sql has already been run.
+-- Each INSERT below uses a fixed id matching a lesson's checkpointQuizId in
+-- src/course/units/*.ts — the id must match exactly, or that lesson's
+-- checkpoint will silently fail to load (getQuizById returns null).
+--
+-- Populated by later tasks in docs/superpowers/plans/2026-07-23-ielts-course.md
+-- (Tasks 3-6), one unit's worth of INSERTs per task, appended below in order.
