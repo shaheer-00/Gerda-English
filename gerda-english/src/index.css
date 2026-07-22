@@ -10,9 +10,9 @@
 
 body {
   font-family: 'Quicksand', 'Nunito', sans-serif;
-  background: linear-gradient(135deg, #fdf2f8 0%, #faf5ff 50%, #f0fdfa 100%);
+  background: linear-gradient(135deg, #fefcf8 0%, #fdf8f0 50%, #f8ecd8 100%);
   min-height: 100vh;
-  color: #4a4a6a;
+  color: #5c4426;
   overflow-x: hidden;
 }
 
@@ -26,17 +26,17 @@ body {
 }
 
 ::-webkit-scrollbar-track {
-  background: #fce7f3;
+  background: #f3e5c8;
   border-radius: 10px;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: linear-gradient(180deg, #f9a8d4, #d8b4fe);
+  background: linear-gradient(180deg, #eaa876, #a8bf94);
   border-radius: 10px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: linear-gradient(180deg, #f472b6, #c084fc);
+  background: linear-gradient(180deg, #d98f5c, #8fac78);
 }
 
 /* Cute button styles */
