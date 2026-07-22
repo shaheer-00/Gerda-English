@@ -5,6 +5,7 @@ import Dashboard from './pages/Dashboard';
 import Course from './pages/Course';
 import CourseUnit from './pages/CourseUnit';
 import CourseLesson from './pages/CourseLesson';
+import CourseCheckpoint from './pages/CourseCheckpoint';
 import Notebook from './pages/Notebook';
 import Calendar from './pages/Calendar';
 import Mistakes from './pages/Mistakes';
@@ -21,6 +22,7 @@ function App() {
           <Route path="course" element={<Course />} />
           <Route path="course/:unitId" element={<CourseUnit />} />
           <Route path="course/:unitId/:lessonId" element={<CourseLesson />} />
+          <Route path="course/:unitId/:lessonId/checkpoint" element={<CourseCheckpoint />} />
           <Route path="notebook" element={<Notebook />} />
           <Route path="calendar" element={<Calendar />} />
           <Route path="mistakes" element={<Mistakes />} />

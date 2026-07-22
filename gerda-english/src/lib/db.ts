@@ -244,16 +244,33 @@ export async function createReward(reward: Partial<Reward>): Promise<Reward> {
 export async function unlockReward(rewardId: string): Promise<void> {
   const progress = await getUserProgress();
   if (!progress) return;
-  
+
   const unlockedRewards = progress.unlocked_rewards || [];
   if (!unlockedRewards.includes(rewardId)) {
     unlockedRewards.push(rewardId);
-    
+
     const { error } = await supabase
       .from('user_progress')
       .update({ unlocked_rewards: unlockedRewards })
       .eq('user_id', USER_ID);
-    
+
+    if (error) throw error;
+  }
+}
+
+export async function markQuizCompleted(quizId: string): Promise<void> {
+  const progress = await getUserProgress();
+  if (!progress) return;
+
+  const completedQuizzes = progress.completed_quizzes || [];
+  if (!completedQuizzes.includes(quizId)) {
+    completedQuizzes.push(quizId);
+
+    const { error } = await supabase
+      .from('user_progress')
+      .update({ completed_quizzes: completedQuizzes })
+      .eq('user_id', USER_ID);
+
     if (error) throw error;
   }
 }
