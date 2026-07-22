@@ -73,25 +73,25 @@ const Calendar = () => {
   const monthLabel = currentDate.toLocaleString('en-US', { month: 'long', year: 'numeric' });
 
   if (loading) {
-    return <p className="text-center text-cute-pink-600 py-12">Loading calendar... 🌸</p>;
+    return <p className="text-center text-warm-brown-600 py-12">Loading calendar... 🌸</p>;
   }
 
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
-        <h2 className="text-3xl font-bold font-cute text-cute-purple-700 flex items-center gap-3">
+        <h2 className="text-3xl font-bold text-warm-brown-800 flex items-center gap-3">
           <CalendarIcon className="w-8 h-8" />
           Study Calendar 📅
         </h2>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        <div className="lg:col-span-2 card-cute">
-          <h3 className="text-xl font-bold text-cute-purple-700 mb-6 text-center">{monthLabel}</h3>
+        <div className="lg:col-span-2 card-warm">
+          <h3 className="text-xl font-bold text-warm-brown-800 mb-6 text-center">{monthLabel}</h3>
 
           <div className="grid grid-cols-7 gap-2 mb-2">
             {['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'].map((day) => (
-              <div key={day} className="text-center font-bold text-cute-pink-600 py-2">
+              <div key={day} className="text-center font-bold text-warm-terracotta-600 py-2">
                 {day}
               </div>
             ))}
@@ -112,18 +112,18 @@ const Calendar = () => {
                   key={day}
                   className={`aspect-square rounded-2xl flex flex-col items-center justify-center relative transition-all duration-300 ${
                     isToday
-                      ? 'bg-gradient-to-br from-cute-pink-400 to-cute-purple-400 text-white shadow-lg scale-105'
+                      ? 'bg-warm-terracotta-500 text-white shadow-lg scale-105'
                       : status === 'completed'
-                      ? 'bg-gradient-to-br from-cute-mint-200 to-cute-blue-200 text-cute-purple-700'
+                      ? 'bg-warm-sage-200 text-warm-brown-800'
                       : status === 'planned'
-                      ? 'bg-cute-pink-50 text-cute-purple-700 border-2 border-cute-pink-200'
-                      : 'bg-gray-50 text-gray-400 hover:bg-cute-pink-50'
+                      ? 'bg-warm-cream-100 text-warm-brown-700 border border-warm-tan-200'
+                      : 'bg-warm-cream-50 text-warm-brown-300 hover:bg-warm-cream-100'
                   }`}
                 >
                   <span className="font-bold">{day}</span>
-                  {status === 'completed' && <CheckCircle className="w-4 h-4 mt-1 text-cute-mint-600" />}
+                  {status === 'completed' && <CheckCircle className="w-4 h-4 mt-1 text-warm-sage-700" />}
                   {status === 'planned' && !isToday && (
-                    <div className="w-2 h-2 bg-cute-pink-300 rounded-full mt-1"></div>
+                    <div className="w-2 h-2 bg-warm-terracotta-400 rounded-full mt-1"></div>
                   )}
                   {isToday && <span className="absolute -top-2 -right-2 text-lg">🌟</span>}
                 </div>
@@ -132,39 +132,39 @@ const Calendar = () => {
           </div>
         </div>
 
-        <div className="card-cute">
+        <div className="card-warm">
           <div className="flex items-center justify-between mb-4">
-            <h3 className="text-xl font-bold text-cute-purple-700">Next 7 Days</h3>
+            <h3 className="text-xl font-bold text-warm-brown-800">Next 7 Days</h3>
             <button
               onClick={() => setShowForm(!showForm)}
-              className="p-2 bg-cute-pink-100 rounded-xl hover:bg-cute-pink-200 transition-colors"
+              className="p-2 bg-warm-tan-100 rounded-xl hover:bg-warm-tan-200 transition-colors"
             >
-              <Plus className="w-5 h-5 text-cute-pink-600" />
+              <Plus className="w-5 h-5 text-warm-terracotta-600" />
             </button>
           </div>
 
           {showForm && (
-            <form onSubmit={handleAddTask} className="space-y-2 mb-4 p-3 bg-cute-pink-50 rounded-xl">
+            <form onSubmit={handleAddTask} className="space-y-2 mb-4 p-3 bg-warm-cream-100 rounded-xl">
               <input
                 type="text"
                 placeholder="Task title"
-                className="input-cute"
+                className="input-warm"
                 value={newTask.title}
                 onChange={(e) => setNewTask({ ...newTask, title: e.target.value })}
               />
               <input
                 type="date"
-                className="input-cute"
+                className="input-warm"
                 value={newTask.date}
                 onChange={(e) => setNewTask({ ...newTask, date: e.target.value })}
               />
               <input
                 type="number"
-                className="input-cute"
+                className="input-warm"
                 value={newTask.xp}
                 onChange={(e) => setNewTask({ ...newTask, xp: parseInt(e.target.value) || 0 })}
               />
-              <button type="submit" className="btn-cute btn-primary w-full text-sm py-2">
+              <button type="submit" className="btn-warm btn-warm-primary w-full text-sm py-2">
                 Add Task
               </button>
             </form>
@@ -172,13 +172,13 @@ const Calendar = () => {
 
           <div className="space-y-3">
             {upcoming.length === 0 && (
-              <p className="text-sm text-gray-500 text-center py-4">No tasks planned yet.</p>
+              <p className="text-sm text-warm-brown-400 text-center py-4">No tasks planned yet.</p>
             )}
             {upcoming.map((event) => (
               <div
                 key={event.id}
                 className={`p-4 rounded-2xl transition-all duration-300 cursor-pointer ${
-                  event.completed ? 'bg-gradient-to-r from-cute-mint-100 to-cute-blue-100' : 'bg-cute-pink-50'
+                  event.completed ? 'bg-warm-sage-100' : 'bg-warm-cream-100'
                 }`}
                 onClick={() => handleToggleComplete(event)}
               >
@@ -186,41 +186,41 @@ const Calendar = () => {
                   <div>
                     <p
                       className={`font-semibold ${
-                        event.completed ? 'text-cute-mint-700 line-through' : 'text-cute-purple-700'
+                        event.completed ? 'text-warm-sage-700 line-through' : 'text-warm-brown-800'
                       }`}
                     >
                       {event.title}
                     </p>
-                    <p className="text-xs text-gray-500">
+                    <p className="text-xs text-warm-brown-400">
                       {event.date} · +{event.xp_reward} XP
                     </p>
                   </div>
-                  {event.completed && <CheckCircle className="w-5 h-5 text-cute-mint-600" />}
+                  {event.completed && <CheckCircle className="w-5 h-5 text-warm-sage-600" />}
                 </div>
               </div>
             ))}
           </div>
 
-          <div className="mt-6 pt-6 border-t-2 border-cute-pink-100">
+          <div className="mt-6 pt-6 border-t border-warm-tan-200">
             <div className="flex items-center justify-between mb-2">
-              <span className="text-sm font-semibold text-cute-purple-700">Progress</span>
-              <span className="text-sm text-cute-pink-600">
+              <span className="text-sm font-semibold text-warm-brown-800">Progress</span>
+              <span className="text-sm text-warm-terracotta-600">
                 {completedCount}/{upcoming.length} tasks
               </span>
             </div>
-            <div className="progress-cute">
+            <div className="progress-warm">
               <div
-                className="progress-fill bg-gradient-to-r from-cute-mint-400 to-cute-blue-400"
+                className="progress-warm-fill"
                 style={{ width: `${upcoming.length ? (completedCount / upcoming.length) * 100 : 0}%` }}
               />
             </div>
-            <p className="text-xs text-cute-pink-600 mt-2 text-center">Keep going! You're doing great! 💪</p>
+            <p className="text-xs text-warm-terracotta-600 mt-2 text-center">Keep going! You're doing great! 💪</p>
           </div>
         </div>
       </div>
 
-      <div className="card-cute text-center py-6 bg-gradient-to-r from-cute-peach-50 via-cute-pink-50 to-cute-purple-50">
-        <p className="text-lg text-cute-purple-700">
+      <div className="card-warm text-center py-6">
+        <p className="text-lg text-warm-brown-700">
           🎯 <strong>Remember:</strong> Consistency is key! Even 15 minutes a day makes a difference!
         </p>
       </div>
