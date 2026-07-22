@@ -1,5 +1,6 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Layout from './components/Layout';
+import AdminGate from './components/AdminGate';
 import Dashboard from './pages/Dashboard';
 import Notebook from './pages/Notebook';
 import Calendar from './pages/Calendar';
@@ -19,7 +20,14 @@ function App() {
           <Route path="mistakes" element={<Mistakes />} />
           <Route path="quiz" element={<Quiz />} />
           <Route path="rewards" element={<Rewards />} />
-          <Route path="admin" element={<AdminDashboard />} />
+          <Route
+            path="admin"
+            element={
+              <AdminGate>
+                <AdminDashboard />
+              </AdminGate>
+            }
+          />
         </Route>
       </Routes>
     </Router>
