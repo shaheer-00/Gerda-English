@@ -1,68 +1,76 @@
-import { useState } from 'react';
-import { Book, CheckCircle, XCircle, HelpCircle } from 'lucide-react';
+import { useState, useEffect } from 'react';
+import { Book, CheckCircle, XCircle } from 'lucide-react';
+import { getQuizzes, submitQuizAttempt } from '../lib/db';
+import { Quiz as QuizType } from '../lib/supabase';
 
 const Quiz = () => {
-  const [currentQuiz] = useState({
-    id: 1,
-    title: 'IELTS Listening Practice - Numbers',
-    description: 'Practice listening to numbers - a common IELTS topic!',
-    questions: [
-      {
-        id: 1,
-        question: 'What number do you hear?',
-        audio: 'fifteen',
-        options: ['5', '15', '50', '500'],
-        correct: 1,
-      },
-      {
-        id: 2,
-        question: 'Choose the correct spelling:',
-        text: 'The _____ of students is increasing.',
-        options: ['number', 'numbar', 'numbur', 'numbor'],
-        correct: 0,
-      },
-      {
-        id: 3,
-        question: 'What is the main idea?',
-        text: 'The government plans to invest more in education and healthcare.',
-        options: [
-          'Government will spend less money',
-          'Government will spend more on schools and hospitals',
-          'Government will close schools',
-          'Healthcare is not important',
-        ],
-        correct: 1,
-      },
-    ],
-  });
-
-  const [answers, setAnswers] = useState<Record<number, number>>({});
+  const [currentQuiz, setCurrentQuiz] = useState<QuizType | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [answers, setAnswers] = useState<Record<string, string>>({});
   const [showResults, setShowResults] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
 
-  const handleAnswer = (questionId: number, answerIndex: number) => {
+  useEffect(() => {
+    getQuizzes()
+      .then((data) => setCurrentQuiz(data[0] ?? null))
+      .catch((err) => console.error('Failed to load quizzes:', err))
+      .finally(() => setLoading(false));
+  }, []);
+
+  const handleAnswer = (questionId: string, answer: string) => {
     if (!showResults) {
-      setAnswers({ ...answers, [questionId]: answerIndex });
+      setAnswers({ ...answers, [questionId]: answer });
     }
   };
 
   const calculateScore = () => {
+    if (!currentQuiz) return 0;
     let correct = 0;
     currentQuiz.questions.forEach((q) => {
-      if (answers[q.id] === q.correct) correct++;
+      if (answers[q.id] === q.correct_answer) correct++;
     });
     return correct;
   };
 
-  const handleSubmit = () => {
-    setShowResults(true);
+  const handleSubmit = async () => {
+    if (!currentQuiz || submitting) return;
+    setSubmitting(true);
+    const score = calculateScore();
+    try {
+      await submitQuizAttempt({
+        quiz_id: currentQuiz.id,
+        score,
+        total_questions: currentQuiz.questions.length,
+        answers,
+        xp_earned: currentQuiz.xp_reward,
+      });
+      setShowResults(true);
+    } catch (err) {
+      console.error('Failed to submit quiz attempt:', err);
+    } finally {
+      setSubmitting(false);
+    }
   };
+
+  if (loading) {
+    return <p className="text-center text-cute-pink-600 py-12">Loading quiz... 🌸</p>;
+  }
+
+  if (!currentQuiz) {
+    return (
+      <div className="card-cute text-center py-12">
+        <Book className="w-12 h-12 mx-auto mb-3 text-cute-pink-300" />
+        <h2 className="text-xl font-bold text-cute-purple-700 mb-2">No quizzes yet</h2>
+        <p className="text-gray-500">Ask your admin to create one in the Admin Panel! 🌸</p>
+      </div>
+    );
+  }
 
   const score = calculateScore();
   const percentage = Math.round((score / currentQuiz.questions.length) * 100);
 
   return (
     <div className="space-y-6">
-      {/* Header */}
       <div className="flex items-center justify-between">
         <h2 className="text-3xl font-bold font-cute text-cute-purple-700 flex items-center gap-3">
           <Book className="w-8 h-8" />
@@ -70,23 +78,18 @@ const Quiz = () => {
         </h2>
       </div>
 
-      {/* Quiz Info */}
       <div className="card-cute bg-gradient-to-r from-cute-pink-50 to-cute-purple-50">
         <h3 className="text-2xl font-bold text-cute-purple-700 mb-2">{currentQuiz.title}</h3>
         <p className="text-cute-pink-600">{currentQuiz.description}</p>
         <div className="flex items-center gap-4 mt-4">
           <span className="badge-cute badge-pink">{currentQuiz.questions.length} questions</span>
-          <span className="badge-cute badge-purple">Listening + Reading</span>
-          <span className="badge-cute badge-mint">+50 XP on completion</span>
+          <span className="badge-cute badge-mint">+{currentQuiz.xp_reward} XP on completion</span>
         </div>
       </div>
 
-      {/* Results Summary */}
       {showResults && (
         <div className="card-cute text-center py-8 bg-gradient-to-r from-cute-mint-50 to-cute-blue-50">
-          <div className="text-6xl mb-4">
-            {percentage >= 80 ? '🎉' : percentage >= 60 ? '👍' : '💪'}
-          </div>
+          <div className="text-6xl mb-4">{percentage >= 80 ? '🎉' : percentage >= 60 ? '👍' : '💪'}</div>
           <h3 className="text-3xl font-bold text-cute-purple-700 mb-2">
             Your Score: {score}/{currentQuiz.questions.length}
           </h3>
@@ -105,10 +108,10 @@ const Quiz = () => {
           </div>
           <p className="text-cute-purple-700 font-semibold">
             {percentage >= 80
-              ? 'Amazing job! You\'re ready for IELTS! 🌟'
+              ? "Amazing job! You're ready for IELTS! 🌟"
               : percentage >= 60
               ? 'Good work! Keep practicing! 💪'
-              : 'Don\'t give up! Practice makes perfect! 💕'}
+              : "Don't give up! Practice makes perfect! 💕"}
           </p>
           <button
             onClick={() => {
@@ -122,11 +125,11 @@ const Quiz = () => {
         </div>
       )}
 
-      {/* Questions */}
       <div className="space-y-6">
         {currentQuiz.questions.map((q, index) => {
-          const isCorrect = answers[q.id] === q.correct;
+          const isCorrect = answers[q.id] === q.correct_answer;
           const hasAnswered = answers[q.id] !== undefined;
+          const showResult = showResults && hasAnswered;
 
           return (
             <div key={q.id} className="card-cute">
@@ -135,32 +138,19 @@ const Quiz = () => {
                   {index + 1}
                 </span>
                 <div className="flex-1">
-                  <h4 className="text-lg font-bold text-cute-purple-700 mb-2">{q.question}</h4>
-                  {q.audio && (
-                    <div className="mb-3 p-3 bg-cute-blue-50 rounded-xl border-2 border-cute-blue-200">
-                      <p className="text-sm text-cute-blue-700 italic">
-                        🔊 Audio: "{q.audio}" (Imagine hearing this!)
-                      </p>
-                    </div>
-                  )}
-                  {q.text && (
-                    <div className="mb-3 p-3 bg-cute-purple-50 rounded-xl border-2 border-cute-purple-200">
-                      <p className="text-gray-700">{q.text}</p>
-                    </div>
-                  )}
+                  <h4 className="text-lg font-bold text-cute-purple-700 mb-2">{q.question_text}</h4>
                 </div>
               </div>
 
               <div className="space-y-2 ml-11">
-                {q.options.map((option, optionIndex) => {
-                  const isSelected = answers[q.id] === optionIndex;
-                  const showResult = showResults && hasAnswered;
-                  const isThisCorrect = optionIndex === q.correct;
+                {(q.options ?? []).map((option, optionIndex) => {
+                  const isSelected = answers[q.id] === option;
+                  const isThisCorrect = option === q.correct_answer;
 
                   return (
                     <button
                       key={optionIndex}
-                      onClick={() => handleAnswer(q.id, optionIndex)}
+                      onClick={() => handleAnswer(q.id, option)}
                       disabled={showResults}
                       className={`w-full p-4 rounded-xl text-left transition-all duration-300 border-2 ${
                         showResult
@@ -176,9 +166,7 @@ const Quiz = () => {
                     >
                       <div className="flex items-center justify-between">
                         <span className="font-medium">{option}</span>
-                        {showResult && isThisCorrect && (
-                          <CheckCircle className="w-5 h-5 text-green-600" />
-                        )}
+                        {showResult && isThisCorrect && <CheckCircle className="w-5 h-5 text-green-600" />}
                         {showResult && isSelected && !isThisCorrect && (
                           <XCircle className="w-5 h-5 text-red-600" />
                         )}
@@ -189,16 +177,14 @@ const Quiz = () => {
               </div>
 
               {showResult && (
-                <div className={`mt-4 ml-11 p-4 rounded-xl ${
-                  isCorrect
-                    ? 'bg-green-50 border-2 border-green-200'
-                    : 'bg-cute-pink-50 border-2 border-cute-pink-200'
-                }`}>
+                <div
+                  className={`mt-4 ml-11 p-4 rounded-xl ${
+                    isCorrect ? 'bg-green-50 border-2 border-green-200' : 'bg-cute-pink-50 border-2 border-cute-pink-200'
+                  }`}
+                >
                   <p className="text-sm">
                     <strong>{isCorrect ? '✅ Correct!' : '💡 Tip:'}</strong>{' '}
-                    {isCorrect
-                      ? 'Well done!'
-                      : `The correct answer is "${q.options[q.correct]}".`}
+                    {isCorrect ? 'Well done!' : `The correct answer is "${q.correct_answer}".`}
                   </p>
                 </div>
               )}
@@ -207,14 +193,14 @@ const Quiz = () => {
         })}
       </div>
 
-      {/* Submit Button */}
       {!showResults && Object.keys(answers).length === currentQuiz.questions.length && (
         <div className="text-center">
           <button
             onClick={handleSubmit}
-            className="btn-cute btn-primary text-lg px-12 py-4"
+            disabled={submitting}
+            className="btn-cute btn-primary text-lg px-12 py-4 disabled:opacity-50"
           >
-            Submit Answers ✨
+            {submitting ? 'Submitting...' : 'Submit Answers ✨'}
           </button>
         </div>
       )}
