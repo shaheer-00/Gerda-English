@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Outlet, Link, useLocation } from 'react-router-dom';
-import { BookOpen, Calendar, Trophy, Gift, Settings, Home, Book, XCircle } from 'lucide-react';
+import { BookOpen, Calendar, Trophy, Gift, Settings, Home, Book, XCircle, GraduationCap } from 'lucide-react';
 import { getUserProgress } from '../lib/db';
 
 const Layout = () => {
@@ -23,6 +23,7 @@ const Layout = () => {
 
   const menuItems = [
     { path: '/', icon: Home, label: 'Home', color: 'from-cute-pink-400 to-cute-purple-400' },
+    { path: '/course', icon: GraduationCap, label: 'Course', color: 'from-cute-mint-400 to-cute-purple-400' },
     { path: '/notebook', icon: BookOpen, label: 'Notebook', color: 'from-cute-blue-400 to-cute-mint-400' },
     { path: '/calendar', icon: Calendar, label: 'Calendar', color: 'from-cute-peach-400 to-cute-pink-400' },
     { path: '/mistakes', icon: XCircle, label: 'Mistakes', color: 'from-cute-purple-400 to-cute-pink-400' },

@@ -2,6 +2,7 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Layout from './components/Layout';
 import AdminGate from './components/AdminGate';
 import Dashboard from './pages/Dashboard';
+import Course from './pages/Course';
 import Notebook from './pages/Notebook';
 import Calendar from './pages/Calendar';
 import Mistakes from './pages/Mistakes';
@@ -15,6 +16,7 @@ function App() {
       <Routes>
         <Route path="/" element={<Layout />}>
           <Route index element={<Dashboard />} />
+          <Route path="course" element={<Course />} />
           <Route path="notebook" element={<Notebook />} />
           <Route path="calendar" element={<Calendar />} />
           <Route path="mistakes" element={<Mistakes />} />
