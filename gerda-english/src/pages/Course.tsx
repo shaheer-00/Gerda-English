@@ -19,11 +19,16 @@ const Course = () => {
   }, []);
 
   if (loading) {
-    return <p className="text-center text-warm-brown-600 font-warm py-12">Loading your course...</p>;
+    return (
+      <div className="-m-8 p-8 min-h-[calc(100vh-2rem)] bg-warm-cream-50">
+        <p className="text-center text-warm-brown-600 font-warm py-12">Loading your course...</p>
+      </div>
+    );
   }
 
   return (
-    <div className="space-y-6 font-warm">
+    <div className="-m-8 p-8 min-h-[calc(100vh-2rem)] bg-warm-cream-50">
+      <div className="space-y-6 font-warm">
       <div>
         <h2 className="text-3xl font-bold text-warm-brown-800">📚 Your IELTS Course</h2>
         <p className="text-warm-brown-500 mt-1">Band 4 → Band 6.5, one unit at a time.</p>
@@ -74,6 +79,7 @@ const Course = () => {
             <div key={unit.id}>{card}</div>
           );
         })}
+      </div>
       </div>
     </div>
   );

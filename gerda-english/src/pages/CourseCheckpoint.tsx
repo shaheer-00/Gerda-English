@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { units } from '../course/units';
-import { getQuizById, submitQuizAttempt, markQuizCompleted } from '../lib/db';
+import { getQuizById, submitQuizAttempt, markQuizCompleted, getUserProgress } from '../lib/db';
 import { Quiz as QuizType } from '../lib/supabase';
 
 const PASS_THRESHOLD = 60;
@@ -17,14 +17,18 @@ const CourseCheckpoint = () => {
   const [answers, setAnswers] = useState<Record<string, string>>({});
   const [showResults, setShowResults] = useState(false);
   const [submitting, setSubmitting] = useState(false);
+  const [alreadyCompleted, setAlreadyCompleted] = useState(false);
 
   useEffect(() => {
     if (!lesson) {
       setLoading(false);
       return;
     }
-    getQuizById(lesson.checkpointQuizId)
-      .then(setQuiz)
+    Promise.all([getQuizById(lesson.checkpointQuizId), getUserProgress()])
+      .then(([quizResult, progress]) => {
+        setQuiz(quizResult);
+        setAlreadyCompleted((progress?.completed_quizzes ?? []).includes(lesson.checkpointQuizId));
+      })
       .catch((err) => console.error('Failed to load checkpoint:', err))
       .finally(() => setLoading(false));
   }, [lesson]);
@@ -50,7 +54,7 @@ const CourseCheckpoint = () => {
         score,
         total_questions: quiz.questions.length,
         answers,
-        xp_earned: passed ? quiz.xp_reward : 0,
+        xp_earned: passed && !alreadyCompleted ? quiz.xp_reward : 0,
       });
       if (passed) {
         await markQuizCompleted(quiz.id);
@@ -64,16 +68,22 @@ const CourseCheckpoint = () => {
   };
 
   if (loading) {
-    return <p className="text-center text-warm-brown-600 font-warm py-12">Loading checkpoint...</p>;
+    return (
+      <div className="-m-8 p-8 min-h-[calc(100vh-2rem)] bg-warm-cream-50">
+        <p className="text-center text-warm-brown-600 font-warm py-12">Loading checkpoint...</p>
+      </div>
+    );
   }
 
   if (!unit || !lesson || !quiz) {
     return (
-      <div className="font-warm text-center py-12">
-        <p className="text-warm-brown-600">Checkpoint not found.</p>
-        <Link to="/course" className="text-warm-terracotta-600 underline">
-          Back to course
-        </Link>
+      <div className="-m-8 p-8 min-h-[calc(100vh-2rem)] bg-warm-cream-50">
+        <div className="font-warm text-center py-12">
+          <p className="text-warm-brown-600">Checkpoint not found.</p>
+          <Link to="/course" className="text-warm-terracotta-600 underline">
+            Back to course
+          </Link>
+        </div>
       </div>
     );
   }
@@ -83,7 +93,8 @@ const CourseCheckpoint = () => {
   const passed = percentage >= PASS_THRESHOLD;
 
   return (
-    <div className="space-y-6 font-warm">
+    <div className="-m-8 p-8 min-h-[calc(100vh-2rem)] bg-warm-cream-50">
+      <div className="space-y-6 font-warm">
       <div>
         <p className="text-sm text-warm-terracotta-600 font-semibold">{lesson.title}</p>
         <h2 className="text-3xl font-bold text-warm-brown-800">Checkpoint</h2>
@@ -97,7 +108,9 @@ const CourseCheckpoint = () => {
           </h3>
           <p className="text-warm-brown-500 mt-2">
             {passed
-              ? `Nice work — this lesson is complete, and the next one is unlocked. +${quiz.xp_reward} XP earned.`
+              ? alreadyCompleted
+                ? `Nice work — you've already completed this checkpoint, so no additional XP this time, but great practice!`
+                : `Nice work — this lesson is complete, and the next one is unlocked. +${quiz.xp_reward} XP earned.`
               : `You'll need ${PASS_THRESHOLD}% or more to unlock the next lesson — review the material above and try again.`}
           </p>
           <div className="flex gap-3 justify-center mt-6">
@@ -166,6 +179,7 @@ const CourseCheckpoint = () => {
           )}
         </>
       )}
+      </div>
     </div>
   );
 };

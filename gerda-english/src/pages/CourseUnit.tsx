@@ -21,22 +21,29 @@ const CourseUnit = () => {
   const unit = units[unitIndex];
 
   if (loading) {
-    return <p className="text-center text-warm-brown-600 font-warm py-12">Loading unit...</p>;
+    return (
+      <div className="-m-8 p-8 min-h-[calc(100vh-2rem)] bg-warm-cream-50">
+        <p className="text-center text-warm-brown-600 font-warm py-12">Loading unit...</p>
+      </div>
+    );
   }
 
   if (!unit) {
     return (
-      <div className="font-warm text-center py-12">
-        <p className="text-warm-brown-600">Unit not found.</p>
-        <Link to="/course" className="text-warm-terracotta-600 underline">
-          Back to course
-        </Link>
+      <div className="-m-8 p-8 min-h-[calc(100vh-2rem)] bg-warm-cream-50">
+        <div className="font-warm text-center py-12">
+          <p className="text-warm-brown-600">Unit not found.</p>
+          <Link to="/course" className="text-warm-terracotta-600 underline">
+            Back to course
+          </Link>
+        </div>
       </div>
     );
   }
 
   return (
-    <div className="space-y-6 font-warm">
+    <div className="-m-8 p-8 min-h-[calc(100vh-2rem)] bg-warm-cream-50">
+      <div className="space-y-6 font-warm">
       <Link to="/course" className="inline-flex items-center gap-2 text-warm-terracotta-600 hover:text-warm-terracotta-700">
         <ArrowLeft className="w-4 h-4" /> Back to course
       </Link>
@@ -85,6 +92,7 @@ const CourseUnit = () => {
             <div key={lesson.id}>{row}</div>
           );
         })}
+      </div>
       </div>
     </div>
   );
