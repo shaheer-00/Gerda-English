@@ -48,7 +48,7 @@ const Layout = () => {
           <div className="progress-cute mb-2">
             <div
               className="progress-fill bg-gradient-to-r from-cute-pink-400 to-cute-purple-400"
-              style={{ width: `${(xp % 1000) / 10}%` }}
+              style={{ width: `${xp % 100}%` }}
             />
           </div>
           <p className="text-xs text-cute-pink-600">{xp} XP total</p>

@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { XCircle, BookOpen, Headphones, Eye, PenTool } from 'lucide-react';
+import { XCircle, BookOpen, Headphones, Eye, PenTool, SpellCheck } from 'lucide-react';
 import { getMistakes } from '../lib/db';
 import { Mistake } from '../lib/supabase';
 
@@ -25,6 +25,8 @@ const Mistakes = () => {
         return <BookOpen className="w-5 h-5" />;
       case 'grammar':
         return <PenTool className="w-5 h-5" />;
+      case 'spelling':
+        return <SpellCheck className="w-5 h-5" />;
       default:
         return <XCircle className="w-5 h-5" />;
     }
@@ -38,6 +40,8 @@ const Mistakes = () => {
         return 'from-cute-purple-400 to-cute-pink-400';
       case 'vocabulary':
         return 'from-cute-peach-400 to-cute-pink-400';
+      case 'spelling':
+        return 'from-cute-blue-400 to-cute-purple-400';
       case 'grammar':
         return 'from-cute-mint-400 to-cute-blue-400';
       default:
@@ -53,6 +57,7 @@ const Mistakes = () => {
     listening: mistakes.filter((m) => m.error_type === 'listening').length,
     vocabulary: mistakes.filter((m) => m.error_type === 'vocabulary').length,
     grammar: mistakes.filter((m) => m.error_type === 'grammar').length,
+    spelling: mistakes.filter((m) => m.error_type === 'spelling').length,
   };
 
   if (loading) {
@@ -69,7 +74,7 @@ const Mistakes = () => {
         <p className="text-cute-pink-600">Learn from mistakes = Get better! 💪</p>
       </div>
 
-      <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
+      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
         <div className="card-cute text-center">
           <p className="text-3xl font-bold text-cute-purple-700">{stats.total}</p>
           <p className="text-sm text-gray-500">Total</p>
@@ -90,10 +95,14 @@ const Mistakes = () => {
           <p className="text-3xl font-bold text-cute-mint-700">{stats.grammar}</p>
           <p className="text-sm text-gray-500">Grammar</p>
         </div>
+        <div className="card-cute text-center bg-gradient-to-br from-cute-blue-50 to-cute-purple-50">
+          <p className="text-3xl font-bold text-cute-blue-700">{stats.spelling}</p>
+          <p className="text-sm text-gray-500">Spelling</p>
+        </div>
       </div>
 
       <div className="flex flex-wrap gap-3">
-        {['all', 'reading', 'listening', 'vocabulary', 'grammar'].map((type) => (
+        {['all', 'reading', 'listening', 'vocabulary', 'grammar', 'spelling'].map((type) => (
           <button
             key={type}
             onClick={() => setFilter(type)}
