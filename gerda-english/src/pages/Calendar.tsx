@@ -1,30 +1,83 @@
-import { useState } from 'react';
+import { useState, useEffect, FormEvent } from 'react';
 import { Calendar as CalendarIcon, Plus, CheckCircle } from 'lucide-react';
+import { getCalendarEvents, createCalendarEvent, updateCalendarEvent } from '../lib/db';
+import { CalendarEvent } from '../lib/supabase';
+
+const toDateKey = (year: number, month: number, day: number) =>
+  `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
 
 const Calendar = () => {
-  const [currentDate] = useState(new Date());
-  const [studyPlan] = useState([
-    { day: 1, task: 'Listening Practice', completed: true, xp: 30 },
-    { day: 2, task: 'Vocabulary Review', completed: true, xp: 20 },
-    { day: 3, task: 'Reading Test', completed: false, xp: 50 },
-    { day: 4, task: 'Writing Practice', completed: false, xp: 40 },
-    { day: 5, task: 'Speaking Practice', completed: false, xp: 35 },
-    { day: 6, task: 'Full Mock Test', completed: false, xp: 100 },
-    { day: 7, task: 'Review Mistakes', completed: false, xp: 25 },
-  ]);
+  const currentDate = new Date();
+  const year = currentDate.getFullYear();
+  const month = currentDate.getMonth();
+  const daysInMonth = new Date(year, month + 1, 0).getDate();
+  const firstDayOfMonth = (new Date(year, month, 1).getDay() + 6) % 7; // Monday = 0
 
-  const daysInMonth = 31;
-  const firstDayOfMonth = 1; // Monday
+  const [events, setEvents] = useState<CalendarEvent[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [showForm, setShowForm] = useState(false);
+  const [newTask, setNewTask] = useState({
+    title: '',
+    date: toDateKey(year, month, currentDate.getDate()),
+    xp: 20,
+  });
+
+  useEffect(() => {
+    getCalendarEvents(month + 1, year)
+      .then(setEvents)
+      .catch((err) => console.error('Failed to load calendar events:', err))
+      .finally(() => setLoading(false));
+  }, [month, year]);
 
   const getDayStatus = (day: number) => {
-    const plan = studyPlan.find(p => p.day === day);
-    if (!plan) return null;
-    return plan.completed ? 'completed' : 'planned';
+    const dateKey = toDateKey(year, month, day);
+    const event = events.find((e) => e.date === dateKey);
+    if (!event) return null;
+    return event.completed ? 'completed' : 'planned';
   };
+
+  const todayKey = toDateKey(year, month, currentDate.getDate());
+  const upcoming = [...events]
+    .filter((e) => e.date >= todayKey)
+    .sort((a, b) => a.date.localeCompare(b.date))
+    .slice(0, 7);
+  const completedCount = upcoming.filter((e) => e.completed).length;
+
+  const handleToggleComplete = async (event: CalendarEvent) => {
+    try {
+      const updated = await updateCalendarEvent(event.id, { completed: !event.completed });
+      setEvents((prev) => prev.map((e) => (e.id === event.id ? updated : e)));
+    } catch (err) {
+      console.error('Failed to update event:', err);
+    }
+  };
+
+  const handleAddTask = async (e: FormEvent) => {
+    e.preventDefault();
+    if (!newTask.title) return;
+    try {
+      const created = await createCalendarEvent({
+        title: newTask.title,
+        date: newTask.date,
+        xp_reward: newTask.xp,
+        completed: false,
+      });
+      setEvents((prev) => [...prev, created]);
+      setNewTask({ title: '', date: todayKey, xp: 20 });
+      setShowForm(false);
+    } catch (err) {
+      console.error('Failed to add task:', err);
+    }
+  };
+
+  const monthLabel = currentDate.toLocaleString('en-US', { month: 'long', year: 'numeric' });
+
+  if (loading) {
+    return <p className="text-center text-cute-pink-600 py-12">Loading calendar... 🌸</p>;
+  }
 
   return (
     <div className="space-y-6">
-      {/* Header */}
       <div className="flex items-center justify-between">
         <h2 className="text-3xl font-bold font-cute text-cute-purple-700 flex items-center gap-3">
           <CalendarIcon className="w-8 h-8" />
@@ -33,13 +86,9 @@ const Calendar = () => {
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* Monthly Calendar */}
         <div className="lg:col-span-2 card-cute">
-          <h3 className="text-xl font-bold text-cute-purple-700 mb-6 text-center">
-            January 2024
-          </h3>
+          <h3 className="text-xl font-bold text-cute-purple-700 mb-6 text-center">{monthLabel}</h3>
 
-          {/* Weekday Headers */}
           <div className="grid grid-cols-7 gap-2 mb-2">
             {['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'].map((day) => (
               <div key={day} className="text-center font-bold text-cute-pink-600 py-2">
@@ -48,14 +97,11 @@ const Calendar = () => {
             ))}
           </div>
 
-          {/* Calendar Grid */}
           <div className="grid grid-cols-7 gap-2">
-            {/* Empty cells for days before the 1st */}
-            {Array.from({ length: firstDayOfMonth - 1 }).map((_, i) => (
+            {Array.from({ length: firstDayOfMonth }).map((_, i) => (
               <div key={`empty-${i}`} className="aspect-square"></div>
             ))}
 
-            {/* Days of the month */}
             {Array.from({ length: daysInMonth }).map((_, i) => {
               const day = i + 1;
               const status = getDayStatus(day);
@@ -75,88 +121,104 @@ const Calendar = () => {
                   }`}
                 >
                   <span className="font-bold">{day}</span>
-                  {status === 'completed' && (
-                    <CheckCircle className="w-4 h-4 mt-1 text-cute-mint-600" />
-                  )}
+                  {status === 'completed' && <CheckCircle className="w-4 h-4 mt-1 text-cute-mint-600" />}
                   {status === 'planned' && !isToday && (
                     <div className="w-2 h-2 bg-cute-pink-300 rounded-full mt-1"></div>
                   )}
-                  {isToday && (
-                    <span className="absolute -top-2 -right-2 text-lg">🌟</span>
-                  )}
+                  {isToday && <span className="absolute -top-2 -right-2 text-lg">🌟</span>}
                 </div>
               );
             })}
           </div>
         </div>
 
-        {/* Study Plan */}
         <div className="card-cute">
           <div className="flex items-center justify-between mb-4">
-            <h3 className="text-xl font-bold text-cute-purple-700">This Week's Plan</h3>
-            <button className="p-2 bg-cute-pink-100 rounded-xl hover:bg-cute-pink-200 transition-colors">
+            <h3 className="text-xl font-bold text-cute-purple-700">Next 7 Days</h3>
+            <button
+              onClick={() => setShowForm(!showForm)}
+              className="p-2 bg-cute-pink-100 rounded-xl hover:bg-cute-pink-200 transition-colors"
+            >
               <Plus className="w-5 h-5 text-cute-pink-600" />
             </button>
           </div>
 
+          {showForm && (
+            <form onSubmit={handleAddTask} className="space-y-2 mb-4 p-3 bg-cute-pink-50 rounded-xl">
+              <input
+                type="text"
+                placeholder="Task title"
+                className="input-cute"
+                value={newTask.title}
+                onChange={(e) => setNewTask({ ...newTask, title: e.target.value })}
+              />
+              <input
+                type="date"
+                className="input-cute"
+                value={newTask.date}
+                onChange={(e) => setNewTask({ ...newTask, date: e.target.value })}
+              />
+              <input
+                type="number"
+                className="input-cute"
+                value={newTask.xp}
+                onChange={(e) => setNewTask({ ...newTask, xp: parseInt(e.target.value) || 0 })}
+              />
+              <button type="submit" className="btn-cute btn-primary w-full text-sm py-2">
+                Add Task
+              </button>
+            </form>
+          )}
+
           <div className="space-y-3">
-            {studyPlan.map((plan) => (
+            {upcoming.length === 0 && (
+              <p className="text-sm text-gray-500 text-center py-4">No tasks planned yet.</p>
+            )}
+            {upcoming.map((event) => (
               <div
-                key={plan.day}
-                className={`p-4 rounded-2xl transition-all duration-300 ${
-                  plan.completed
-                    ? 'bg-gradient-to-r from-cute-mint-100 to-cute-blue-100'
-                    : 'bg-cute-pink-50'
+                key={event.id}
+                className={`p-4 rounded-2xl transition-all duration-300 cursor-pointer ${
+                  event.completed ? 'bg-gradient-to-r from-cute-mint-100 to-cute-blue-100' : 'bg-cute-pink-50'
                 }`}
+                onClick={() => handleToggleComplete(event)}
               >
                 <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-3">
-                    <div
-                      className={`w-8 h-8 rounded-full flex items-center justify-center ${
-                        plan.completed
-                          ? 'bg-cute-mint-400 text-white'
-                          : 'bg-cute-pink-200 text-cute-pink-600'
+                  <div>
+                    <p
+                      className={`font-semibold ${
+                        event.completed ? 'text-cute-mint-700 line-through' : 'text-cute-purple-700'
                       }`}
                     >
-                      {plan.day}
-                    </div>
-                    <div>
-                      <p
-                        className={`font-semibold ${
-                          plan.completed ? 'text-cute-mint-700 line-through' : 'text-cute-purple-700'
-                        }`}
-                      >
-                        {plan.task}
-                      </p>
-                      <p className="text-xs text-gray-500">+{plan.xp} XP</p>
-                    </div>
+                      {event.title}
+                    </p>
+                    <p className="text-xs text-gray-500">
+                      {event.date} · +{event.xp_reward} XP
+                    </p>
                   </div>
-                  {plan.completed && <CheckCircle className="w-5 h-5 text-cute-mint-600" />}
+                  {event.completed && <CheckCircle className="w-5 h-5 text-cute-mint-600" />}
                 </div>
               </div>
             ))}
           </div>
 
-          {/* Weekly Progress */}
           <div className="mt-6 pt-6 border-t-2 border-cute-pink-100">
             <div className="flex items-center justify-between mb-2">
-              <span className="text-sm font-semibold text-cute-purple-700">Weekly Progress</span>
-              <span className="text-sm text-cute-pink-600">2/7 tasks</span>
+              <span className="text-sm font-semibold text-cute-purple-700">Progress</span>
+              <span className="text-sm text-cute-pink-600">
+                {completedCount}/{upcoming.length} tasks
+              </span>
             </div>
             <div className="progress-cute">
               <div
                 className="progress-fill bg-gradient-to-r from-cute-mint-400 to-cute-blue-400"
-                style={{ width: `${(2 / 7) * 100}%` }}
+                style={{ width: `${upcoming.length ? (completedCount / upcoming.length) * 100 : 0}%` }}
               />
             </div>
-            <p className="text-xs text-cute-pink-600 mt-2 text-center">
-              Keep going! You're doing great! 💪
-            </p>
+            <p className="text-xs text-cute-pink-600 mt-2 text-center">Keep going! You're doing great! 💪</p>
           </div>
         </div>
       </div>
 
-      {/* Motivational Message */}
       <div className="card-cute text-center py-6 bg-gradient-to-r from-cute-peach-50 via-cute-pink-50 to-cute-purple-50">
         <p className="text-lg text-cute-purple-700">
           🎯 <strong>Remember:</strong> Consistency is key! Even 15 minutes a day makes a difference!
