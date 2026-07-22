@@ -122,15 +122,27 @@ export async function submitQuizAttempt(attempt: Partial<QuizAttempt>): Promise<
     .insert([attemptData])
     .select()
     .single();
-  
+
   if (error) throw error;
-  
+
   // Update user progress
   if (attempt.xp_earned) {
     await addXP(attempt.xp_earned);
   }
-  
+
   return data;
+}
+
+export async function getQuizAttempts(): Promise<QuizAttempt[]> {
+  const { data, error } = await supabase
+    .from('quiz_attempts')
+    .select('*')
+    .eq('user_id', USER_ID)
+    .order('completed_at', { ascending: false })
+    .limit(10);
+
+  if (error) throw error;
+  return data || [];
 }
 
 // User Progress Functions
