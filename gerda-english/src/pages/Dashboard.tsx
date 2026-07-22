@@ -63,88 +63,88 @@ const Dashboard = () => {
   }, []);
 
   if (loading) {
-    return <p className="text-center text-cute-pink-600 py-12">Loading dashboard... 🌸</p>;
+    return <p className="text-center text-warm-brown-600 py-12">Loading dashboard... 🌸</p>;
   }
 
   return (
     <div className="space-y-8">
       <div className="text-center py-8">
-        <h2 className="text-4xl font-bold font-cute text-cute-purple-700 mb-2">Welcome back, Gerda! 🌸</h2>
-        <p className="text-xl text-cute-pink-600">{randomMessage}</p>
+        <h2 className="text-4xl font-bold text-warm-brown-800 mb-2">Welcome back, Gerda! 🌸</h2>
+        <p className="text-xl text-warm-terracotta-600">{randomMessage}</p>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        <div className="card-cute">
+        <div className="card-warm">
           <div className="flex items-center gap-4">
-            <div className="p-3 bg-gradient-to-br from-cute-blue-400 to-cute-mint-400 rounded-2xl">
+            <div className="p-3 bg-warm-terracotta-500 rounded-2xl">
               <BookOpen className="w-8 h-8 text-white" />
             </div>
             <div>
-              <p className="text-sm text-gray-500">Notes Created</p>
-              <p className="text-2xl font-bold text-cute-purple-700">{noteCount}</p>
+              <p className="text-sm text-warm-brown-400">Notes Created</p>
+              <p className="text-2xl font-bold text-warm-brown-800">{noteCount}</p>
             </div>
           </div>
         </div>
 
-        <div className="card-cute">
+        <div className="card-warm">
           <div className="flex items-center gap-4">
-            <div className="p-3 bg-gradient-to-br from-cute-peach-400 to-cute-pink-400 rounded-2xl">
+            <div className="p-3 bg-warm-sage-500 rounded-2xl">
               <TrendingUp className="w-8 h-8 text-white" />
             </div>
             <div>
-              <p className="text-sm text-gray-500">Mistakes Logged</p>
-              <p className="text-2xl font-bold text-cute-purple-700">{mistakeCount}</p>
+              <p className="text-sm text-warm-brown-400">Mistakes Logged</p>
+              <p className="text-2xl font-bold text-warm-brown-800">{mistakeCount}</p>
             </div>
           </div>
         </div>
 
-        <div className="card-cute">
+        <div className="card-warm">
           <div className="flex items-center gap-4">
-            <div className="p-3 bg-gradient-to-br from-cute-purple-400 to-cute-pink-400 rounded-2xl">
+            <div className="p-3 bg-warm-terracotta-500 rounded-2xl">
               <Award className="w-8 h-8 text-white" />
             </div>
             <div>
-              <p className="text-sm text-gray-500">Recent Activities</p>
-              <p className="text-2xl font-bold text-cute-purple-700">{activities.length}</p>
+              <p className="text-sm text-warm-brown-400">Recent Activities</p>
+              <p className="text-2xl font-bold text-warm-brown-800">{activities.length}</p>
             </div>
           </div>
         </div>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <div className="card-cute">
-          <h3 className="text-xl font-bold text-cute-purple-700 mb-4">Recent Activity 📝</h3>
+        <div className="card-warm">
+          <h3 className="text-xl font-bold text-warm-brown-800 mb-4">Recent Activity 📝</h3>
           <div className="space-y-3">
             {activities.length === 0 && (
-              <p className="text-sm text-gray-500 text-center py-4">
+              <p className="text-sm text-warm-brown-400 text-center py-4">
                 Nothing yet — go create a note or try a quiz! 🌸
               </p>
             )}
             {activities.map((activity) => (
-              <div key={activity.id} className="flex items-center justify-between p-3 bg-cute-pink-50 rounded-xl">
+              <div key={activity.id} className="flex items-center justify-between p-3 bg-warm-cream-100 rounded-xl">
                 <div>
-                  <p className="font-semibold text-cute-purple-700">{activity.title}</p>
-                  <p className="text-xs text-gray-500">{activity.time}</p>
+                  <p className="font-semibold text-warm-brown-800">{activity.title}</p>
+                  <p className="text-xs text-warm-brown-400">{activity.time}</p>
                 </div>
-                <span className="badge-cute badge-pink">+{activity.xp} XP</span>
+                <span className="badge-warm badge-warm-terracotta">+{activity.xp} XP</span>
               </div>
             ))}
           </div>
         </div>
 
-        <div className="card-cute bg-gradient-to-br from-cute-pink-100 to-cute-purple-100">
-          <h3 className="text-xl font-bold text-cute-purple-700 mb-4">💡 Daily Tip</h3>
+        <div className="card-warm bg-warm-tan-50">
+          <h3 className="text-xl font-bold text-warm-brown-800 mb-4">💡 Daily Tip</h3>
           <div className="space-y-4">
-            <p className="text-cute-purple-800 leading-relaxed">
+            <p className="text-warm-brown-700 leading-relaxed">
               <strong>Listening Practice:</strong> Try watching your favorite English TV shows with subtitles.
               Start with English subtitles, then try without! 📺
             </p>
-            <p className="text-cute-purple-800 leading-relaxed">
+            <p className="text-warm-brown-700 leading-relaxed">
               <strong>Vocabulary:</strong> Learn 5 new words every day and use them in sentences. Write them
               in your notebook! 📖
             </p>
             <div className="pt-4">
-              <p className="text-sm text-cute-pink-600 italic">
+              <p className="text-sm text-warm-terracotta-600 italic">
                 Remember: Progress, not perfection! Every small step counts! 🌈
               </p>
             </div>
@@ -152,12 +152,12 @@ const Dashboard = () => {
         </div>
       </div>
 
-      <div className="card-cute text-center py-8 bg-gradient-to-r from-cute-pink-50 via-cute-purple-50 to-cute-mint-50">
-        <p className="text-2xl font-cute text-cute-purple-700 mb-2">
+      <div className="card-warm text-center py-8">
+        <p className="text-2xl font-warm text-warm-brown-800 mb-2">
           "Believe in yourself and all that you are."
         </p>
-        <p className="text-cute-pink-600">- Christian D. Larson</p>
-        <p className="mt-4 text-lg">💕 You've got this! 💕</p>
+        <p className="text-warm-terracotta-600">- Christian D. Larson</p>
+        <p className="mt-4 text-lg text-warm-brown-700">💕 You've got this! 💕</p>
       </div>
     </div>
   );
