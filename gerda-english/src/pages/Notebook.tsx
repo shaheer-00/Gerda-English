@@ -1,98 +1,100 @@
-import { useState, useRef } from 'react';
+import { useState, useEffect } from 'react';
 import { Save, Search, BookOpen, Plus, Trash2 } from 'lucide-react';
+import { getNotes, saveNote, deleteNote } from '../lib/db';
+import { Note } from '../lib/supabase';
 
 interface WordDefinition {
   word: string;
   definition: string;
-  example: string;
+  example?: string;
+}
+
+const commonWords = ['accommodation', 'environment', 'government', 'education', 'technology'];
+
+async function fetchDefinition(word: string): Promise<WordDefinition | null> {
+  const res = await fetch(`https://api.dictionaryapi.dev/api/v2/entries/en/${encodeURIComponent(word)}`);
+  if (!res.ok) return null;
+  const data = await res.json();
+  const entry = data[0];
+  const definitionObj = entry?.meanings?.[0]?.definitions?.[0];
+  if (!definitionObj) return null;
+  return {
+    word: entry.word,
+    definition: definitionObj.definition,
+    example: definitionObj.example,
+  };
 }
 
 const Notebook = () => {
-  const [notes, setNotes] = useState([
-    {
-      id: 1,
-      title: 'IELTS Listening Vocabulary',
-      content: 'Today I learned about common listening test words...',
-      date: '2024-01-15',
-      tags: ['listening', 'vocabulary'],
-    },
-    {
-      id: 2,
-      title: 'Reading Practice Notes',
-      content: 'Tips for reading comprehension: 1. Skim first...',
-      date: '2024-01-14',
-      tags: ['reading', 'tips'],
-    },
-  ]);
-
+  const [notes, setNotes] = useState<Note[]>([]);
+  const [loading, setLoading] = useState(true);
   const [currentNote, setCurrentNote] = useState({ title: '', content: '' });
-  const [showDictionary, setShowDictionary] = useState(false);
+  const [saving, setSaving] = useState(false);
   const [selectedWord, setSelectedWord] = useState<WordDefinition | null>(null);
+  const [dictLoading, setDictLoading] = useState(false);
+  const [dictNotFound, setDictNotFound] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
 
-  // Simple dictionary (in production, use an API)
-  const simpleDictionary: Record<string, WordDefinition> = {
-    'accommodation': {
-      word: 'accommodation',
-      definition: 'A place to live or stay',
-      example: 'I need to find accommodation near the university.',
-    },
-    'environment': {
-      word: 'environment',
-      definition: 'The natural world or surroundings',
-      example: 'We should protect the environment.',
-    },
-    'government': {
-      word: 'government',
-      definition: 'The group of people who control a country',
-      example: 'The government announced new policies.',
-    },
-    'education': {
-      word: 'education',
-      definition: 'The process of teaching and learning',
-      example: 'Education is very important for success.',
-    },
-    'technology': {
-      word: 'technology',
-      definition: 'Modern machines and equipment',
-      example: 'Technology has changed our lives.',
-    },
-  };
+  useEffect(() => {
+    getNotes()
+      .then(setNotes)
+      .catch((err) => console.error('Failed to load notes:', err))
+      .finally(() => setLoading(false));
+  }, []);
 
-  const handleWordClick = (word: string) => {
+  const handleWordClick = async (word: string) => {
     const cleanWord = word.toLowerCase().replace(/[^a-z]/g, '');
-    if (simpleDictionary[cleanWord]) {
-      setSelectedWord(simpleDictionary[cleanWord]);
-      setShowDictionary(true);
+    if (!cleanWord) return;
+    setDictLoading(true);
+    setDictNotFound(false);
+    setSelectedWord(null);
+    try {
+      const def = await fetchDefinition(cleanWord);
+      if (def) {
+        setSelectedWord(def);
+      } else {
+        setDictNotFound(true);
+      }
+    } catch (err) {
+      console.error('Dictionary lookup failed:', err);
+      setDictNotFound(true);
+    } finally {
+      setDictLoading(false);
     }
   };
 
-  const handleSaveNote = () => {
-    if (currentNote.title && currentNote.content) {
-      const newNote = {
-        id: Date.now(),
-        ...currentNote,
-        date: new Date().toISOString().split('T')[0],
-        tags: ['general'],
-      };
-      setNotes([newNote, ...notes]);
+  const handleSaveNote = async () => {
+    if (!currentNote.title || !currentNote.content || saving) return;
+    setSaving(true);
+    try {
+      const created = await saveNote(currentNote);
+      setNotes([created, ...notes]);
       setCurrentNote({ title: '', content: '' });
+    } catch (err) {
+      console.error('Failed to save note:', err);
+    } finally {
+      setSaving(false);
     }
   };
 
-  const handleDeleteNote = (id: number) => {
-    setNotes(notes.filter(note => note.id !== id));
+  const handleDeleteNote = async (id: string) => {
+    try {
+      await deleteNote(id);
+      setNotes(notes.filter((note) => note.id !== id));
+    } catch (err) {
+      console.error('Failed to delete note:', err);
+    }
   };
 
   const renderContentWithClickableWords = (content: string) => {
     const words = content.split(' ');
     return words.map((word, index) => {
       const cleanWord = word.toLowerCase().replace(/[^a-z]/g, '');
-      const isClickable = simpleDictionary[cleanWord];
+      const isClickable = commonWords.includes(cleanWord);
       return (
         <span
           key={index}
-          className={`${isClickable ? 'text-cute-pink-500 hover:text-cute-pink-700 cursor-pointer underline decoration-dotted' : ''}`}
+          className={isClickable ? 'text-cute-pink-500 hover:text-cute-pink-700 cursor-pointer underline decoration-dotted' : ''}
           onClick={() => isClickable && handleWordClick(word)}
         >
           {word}{' '}
@@ -102,14 +104,17 @@ const Notebook = () => {
   };
 
   const filteredNotes = notes.filter(
-    note =>
+    (note) =>
       note.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
       note.content.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
+  if (loading) {
+    return <p className="text-center text-cute-pink-600 py-12">Loading notebook... 🌸</p>;
+  }
+
   return (
     <div className="space-y-6">
-      {/* Header */}
       <div className="flex items-center justify-between">
         <h2 className="text-3xl font-bold font-cute text-cute-purple-700 flex items-center gap-3">
           <BookOpen className="w-8 h-8" />
@@ -119,7 +124,6 @@ const Notebook = () => {
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* Note Editor */}
         <div className="lg:col-span-2 space-y-4">
           <div className="card-cute">
             <h3 className="text-xl font-bold text-cute-purple-700 mb-4 flex items-center gap-2">
@@ -141,14 +145,14 @@ const Notebook = () => {
             />
             <button
               onClick={handleSaveNote}
-              className="btn-cute btn-primary mt-4 w-full flex items-center justify-center gap-2"
+              disabled={saving}
+              className="btn-cute btn-primary mt-4 w-full flex items-center justify-center gap-2 disabled:opacity-50"
             >
               <Save className="w-5 h-5" />
-              Save Note
+              {saving ? 'Saving...' : 'Save Note'}
             </button>
           </div>
 
-          {/* Notes List */}
           <div className="card-cute">
             <div className="flex items-center justify-between mb-4">
               <h3 className="text-xl font-bold text-cute-purple-700">My Notes</h3>
@@ -165,6 +169,9 @@ const Notebook = () => {
             </div>
 
             <div className="space-y-4">
+              {filteredNotes.length === 0 && (
+                <p className="text-sm text-gray-500 text-center py-4">No notes yet — write your first one above!</p>
+              )}
               {filteredNotes.map((note) => (
                 <div
                   key={note.id}
@@ -182,69 +189,61 @@ const Notebook = () => {
                   <p className="text-gray-600 mb-2 leading-relaxed">
                     {renderContentWithClickableWords(note.content)}
                   </p>
-                  <div className="flex items-center justify-between">
-                    <div className="flex gap-2">
-                      {note.tags.map((tag, index) => (
-                        <span key={index} className="badge-cute badge-pink text-xs">
-                          #{tag}
-                        </span>
-                      ))}
-                    </div>
-                    <span className="text-xs text-gray-500">{note.date}</span>
-                  </div>
+                  <span className="text-xs text-gray-500">
+                    {new Date(note.updated_at).toLocaleDateString()}
+                  </span>
                 </div>
               ))}
             </div>
           </div>
         </div>
 
-        {/* Dictionary Panel */}
         <div className="space-y-4">
           <div className="card-cute sticky top-4">
             <h3 className="text-xl font-bold text-cute-purple-700 mb-4 flex items-center gap-2">
               <Search className="w-5 h-5" />
               Quick Dictionary
             </h3>
-            
-            {showDictionary && selectedWord ? (
+
+            {dictLoading && <p className="text-center text-gray-500 py-8">Looking it up...</p>}
+
+            {!dictLoading && selectedWord && (
               <div className="space-y-4">
                 <div className="p-4 bg-gradient-to-br from-cute-pink-100 to-cute-purple-100 rounded-2xl">
-                  <h4 className="text-2xl font-bold text-cute-pink-600 mb-2">
-                    {selectedWord.word}
-                  </h4>
+                  <h4 className="text-2xl font-bold text-cute-pink-600 mb-2">{selectedWord.word}</h4>
                   <p className="text-gray-700 mb-3">{selectedWord.definition}</p>
-                  <div className="p-3 bg-white/80 rounded-xl">
-                    <p className="text-sm text-gray-600 italic">
-                      "{selectedWord.example}"
-                    </p>
-                  </div>
+                  {selectedWord.example && (
+                    <div className="p-3 bg-white/80 rounded-xl">
+                      <p className="text-sm text-gray-600 italic">"{selectedWord.example}"</p>
+                    </div>
+                  )}
                 </div>
-                <button
-                  onClick={() => setShowDictionary(false)}
-                  className="btn-cute btn-secondary w-full"
-                >
+                <button onClick={() => setSelectedWord(null)} className="btn-cute btn-secondary w-full">
                   Close
                 </button>
               </div>
-            ) : (
+            )}
+
+            {!dictLoading && !selectedWord && dictNotFound && (
               <div className="text-center py-8 text-gray-500">
-                <Search className="w-12 h-12 mx-auto mb-3 opacity-50" />
-                <p>Click on a pink word in your notes to see its definition here!</p>
-                <p className="text-sm mt-2">Available words: accommodation, environment, government, education, technology...</p>
+                <p>No definition found for that word. Try another!</p>
               </div>
             )}
 
-            {/* Common IELTS Words */}
+            {!dictLoading && !selectedWord && !dictNotFound && (
+              <div className="text-center py-8 text-gray-500">
+                <Search className="w-12 h-12 mx-auto mb-3 opacity-50" />
+                <p>Click on a pink word in your notes to see its definition here!</p>
+              </div>
+            )}
+
             <div className="mt-6 pt-6 border-t-2 border-cute-pink-100">
               <h4 className="font-bold text-cute-purple-700 mb-3">📚 Common IELTS Words</h4>
               <div className="flex flex-wrap gap-2">
-                {Object.keys(simpleDictionary).map((word) => (
+                {commonWords.map((word) => (
                   <button
                     key={word}
-                    onClick={() => {
-                      setSelectedWord(simpleDictionary[word]);
-                      setShowDictionary(true);
-                    }}
+                    onClick={() => handleWordClick(word)}
                     className="px-3 py-1 bg-cute-pink-100 text-cute-pink-700 rounded-full text-sm hover:bg-cute-pink-200 transition-colors"
                   >
                     {word}
