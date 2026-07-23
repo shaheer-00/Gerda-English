@@ -95,7 +95,12 @@ const Quiz = () => {
           </h3>
           <p className="text-xl text-warm-terracotta-600 mb-4">{percentage}% Correct</p>
           <div className="progress-warm max-w-md mx-auto mb-4">
-            <div className="progress-warm-fill" style={{ width: `${percentage}%` }} />
+            <div
+              className={`h-full rounded-full transition-all duration-500 ease-out ${
+                percentage >= 80 ? 'bg-warm-sage-500' : percentage >= 60 ? 'bg-warm-terracotta-500' : 'bg-warm-brown-400'
+              }`}
+              style={{ width: `${percentage}%` }}
+            />
           </div>
           <p className="text-warm-brown-700 font-semibold">
             {percentage >= 80
