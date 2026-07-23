@@ -53,15 +53,15 @@ const Quiz = () => {
   };
 
   if (loading) {
-    return <p className="text-center text-cute-pink-600 py-12">Loading quiz... 🌸</p>;
+    return <p className="text-center text-warm-brown-600 py-12">Loading quiz... 🌸</p>;
   }
 
   if (!currentQuiz) {
     return (
-      <div className="card-cute text-center py-12">
-        <Book className="w-12 h-12 mx-auto mb-3 text-cute-pink-300" />
-        <h2 className="text-xl font-bold text-cute-purple-700 mb-2">No quizzes yet</h2>
-        <p className="text-gray-500">Ask your admin to create one in the Admin Panel! 🌸</p>
+      <div className="card-warm text-center py-12">
+        <Book className="w-12 h-12 mx-auto mb-3 text-warm-tan-400" />
+        <h2 className="text-xl font-bold text-warm-brown-800 mb-2">No quizzes yet</h2>
+        <p className="text-warm-brown-400">Ask your admin to create one in the Admin Panel! 🌸</p>
       </div>
     );
   }
@@ -72,41 +72,32 @@ const Quiz = () => {
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
-        <h2 className="text-3xl font-bold font-cute text-cute-purple-700 flex items-center gap-3">
+        <h2 className="text-3xl font-bold text-warm-brown-800 flex items-center gap-3">
           <Book className="w-8 h-8" />
           Practice Quiz 📝
         </h2>
       </div>
 
-      <div className="card-cute bg-gradient-to-r from-cute-pink-50 to-cute-purple-50">
-        <h3 className="text-2xl font-bold text-cute-purple-700 mb-2">{currentQuiz.title}</h3>
-        <p className="text-cute-pink-600">{currentQuiz.description}</p>
+      <div className="card-warm bg-warm-tan-50">
+        <h3 className="text-2xl font-bold text-warm-brown-800 mb-2">{currentQuiz.title}</h3>
+        <p className="text-warm-terracotta-600">{currentQuiz.description}</p>
         <div className="flex items-center gap-4 mt-4">
-          <span className="badge-cute badge-pink">{currentQuiz.questions.length} questions</span>
-          <span className="badge-cute badge-mint">+{currentQuiz.xp_reward} XP on completion</span>
+          <span className="badge-warm badge-warm-terracotta">{currentQuiz.questions.length} questions</span>
+          <span className="badge-warm badge-warm-sage">+{currentQuiz.xp_reward} XP on completion</span>
         </div>
       </div>
 
       {showResults && (
-        <div className="card-cute text-center py-8 bg-gradient-to-r from-cute-mint-50 to-cute-blue-50">
+        <div className="card-warm text-center py-8">
           <div className="text-6xl mb-4">{percentage >= 80 ? '🎉' : percentage >= 60 ? '👍' : '💪'}</div>
-          <h3 className="text-3xl font-bold text-cute-purple-700 mb-2">
+          <h3 className="text-3xl font-bold text-warm-brown-800 mb-2">
             Your Score: {score}/{currentQuiz.questions.length}
           </h3>
-          <p className="text-xl text-cute-pink-600 mb-4">{percentage}% Correct</p>
-          <div className="progress-cute max-w-md mx-auto mb-4">
-            <div
-              className={`progress-fill ${
-                percentage >= 80
-                  ? 'bg-gradient-to-r from-cute-mint-400 to-cute-blue-400'
-                  : percentage >= 60
-                  ? 'bg-gradient-to-r from-cute-peach-400 to-cute-pink-400'
-                  : 'bg-gradient-to-r from-cute-pink-400 to-cute-purple-400'
-              }`}
-              style={{ width: `${percentage}%` }}
-            />
+          <p className="text-xl text-warm-terracotta-600 mb-4">{percentage}% Correct</p>
+          <div className="progress-warm max-w-md mx-auto mb-4">
+            <div className="progress-warm-fill" style={{ width: `${percentage}%` }} />
           </div>
-          <p className="text-cute-purple-700 font-semibold">
+          <p className="text-warm-brown-700 font-semibold">
             {percentage >= 80
               ? "Amazing job! You're ready for IELTS! 🌟"
               : percentage >= 60
@@ -118,7 +109,7 @@ const Quiz = () => {
               setAnswers({});
               setShowResults(false);
             }}
-            className="btn-cute btn-primary mt-6"
+            className="btn-warm btn-warm-primary mt-6"
           >
             Try Again
           </button>
@@ -132,13 +123,13 @@ const Quiz = () => {
           const showResult = showResults && hasAnswered;
 
           return (
-            <div key={q.id} className="card-cute">
+            <div key={q.id} className="card-warm">
               <div className="flex items-start gap-3 mb-4">
-                <span className="flex-shrink-0 w-8 h-8 bg-gradient-to-br from-cute-pink-400 to-cute-purple-400 text-white rounded-full flex items-center justify-center font-bold">
+                <span className="flex-shrink-0 w-8 h-8 bg-warm-terracotta-500 text-white rounded-full flex items-center justify-center font-bold">
                   {index + 1}
                 </span>
                 <div className="flex-1">
-                  <h4 className="text-lg font-bold text-cute-purple-700 mb-2">{q.question_text}</h4>
+                  <h4 className="text-lg font-bold text-warm-brown-800 mb-2">{q.question_text}</h4>
                 </div>
               </div>
 
@@ -152,21 +143,21 @@ const Quiz = () => {
                       key={optionIndex}
                       onClick={() => handleAnswer(q.id, option)}
                       disabled={showResults}
-                      className={`w-full p-4 rounded-xl text-left transition-all duration-300 border-2 ${
+                      className={`w-full p-4 rounded-xl text-left transition-all duration-300 border ${
                         showResult
                           ? isThisCorrect
-                            ? 'bg-green-100 border-green-400 text-green-700'
+                            ? 'bg-warm-sage-100 border-warm-sage-400 text-warm-sage-800'
                             : isSelected
                             ? 'bg-red-100 border-red-400 text-red-700'
-                            : 'bg-gray-50 border-gray-200 text-gray-400'
+                            : 'bg-warm-cream-50 border-warm-tan-200 text-warm-brown-400'
                           : isSelected
-                          ? 'bg-gradient-to-r from-cute-pink-100 to-cute-purple-100 border-cute-pink-400 text-cute-purple-700'
-                          : 'bg-white border-cute-pink-200 hover:border-cute-pink-400 hover:bg-cute-pink-50'
+                          ? 'bg-warm-tan-100 border-warm-terracotta-400 text-warm-brown-800'
+                          : 'bg-white border-warm-tan-200 hover:border-warm-terracotta-300 hover:bg-warm-cream-50'
                       }`}
                     >
                       <div className="flex items-center justify-between">
                         <span className="font-medium">{option}</span>
-                        {showResult && isThisCorrect && <CheckCircle className="w-5 h-5 text-green-600" />}
+                        {showResult && isThisCorrect && <CheckCircle className="w-5 h-5 text-warm-sage-600" />}
                         {showResult && isSelected && !isThisCorrect && (
                           <XCircle className="w-5 h-5 text-red-600" />
                         )}
@@ -178,11 +169,11 @@ const Quiz = () => {
 
               {showResult && (
                 <div
-                  className={`mt-4 ml-11 p-4 rounded-xl ${
-                    isCorrect ? 'bg-green-50 border-2 border-green-200' : 'bg-cute-pink-50 border-2 border-cute-pink-200'
+                  className={`mt-4 ml-11 p-4 rounded-xl border ${
+                    isCorrect ? 'bg-warm-sage-50 border-warm-sage-200' : 'bg-warm-cream-100 border-warm-tan-200'
                   }`}
                 >
-                  <p className="text-sm">
+                  <p className="text-sm text-warm-brown-700">
                     <strong>{isCorrect ? '✅ Correct!' : '💡 Tip:'}</strong>{' '}
                     {isCorrect ? 'Well done!' : `The correct answer is "${q.correct_answer}".`}
                   </p>
@@ -198,7 +189,7 @@ const Quiz = () => {
           <button
             onClick={handleSubmit}
             disabled={submitting}
-            className="btn-cute btn-primary text-lg px-12 py-4 disabled:opacity-50"
+            className="btn-warm btn-warm-primary text-lg px-12 py-4 disabled:opacity-50"
           >
             {submitting ? 'Submitting...' : 'Submit Answers ✨'}
           </button>
