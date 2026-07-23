@@ -30,20 +30,20 @@ const AdminGate = ({ children }: { children: ReactNode }) => {
 
   return (
     <div className="max-w-sm mx-auto mt-20">
-      <div className="card-cute text-center">
-        <Lock className="w-10 h-10 mx-auto mb-4 text-cute-pink-400" />
-        <h2 className="text-xl font-bold text-cute-purple-700 mb-4">Admin Access</h2>
+      <div className="card-warm text-center">
+        <Lock className="w-10 h-10 mx-auto mb-4 text-warm-terracotta-400" />
+        <h2 className="text-xl font-bold text-warm-brown-800 mb-4">Admin Access</h2>
         <form onSubmit={handleSubmit} className="space-y-3">
           <input
             type="password"
             placeholder="Password"
-            className="input-cute"
+            className="input-warm"
             value={input}
             onChange={(e) => setInput(e.target.value)}
             autoFocus
           />
           {error && <p className="text-sm text-red-500">{error}</p>}
-          <button type="submit" className="btn-cute btn-primary w-full">
+          <button type="submit" className="btn-warm btn-warm-primary w-full">
             Unlock
           </button>
         </form>
