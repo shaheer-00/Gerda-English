@@ -37,40 +37,37 @@ const Rewards = () => {
   const maxXp = rewards.length ? Math.max(...rewards.map((r) => r.xp_required)) : 0;
 
   if (loading) {
-    return <p className="text-center text-cute-pink-600 py-12">Loading rewards... 🌸</p>;
+    return <p className="text-center text-warm-brown-600 py-12">Loading rewards... 🌸</p>;
   }
 
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
-        <h2 className="text-3xl font-bold font-cute text-cute-purple-700 flex items-center gap-3">
+        <h2 className="text-3xl font-bold text-warm-brown-800 flex items-center gap-3">
           <Gift className="w-8 h-8" />
           Your Rewards 🎁
         </h2>
       </div>
 
-      <div className="card-cute bg-gradient-to-r from-cute-pink-50 to-cute-purple-50">
+      <div className="card-warm bg-warm-tan-50">
         <div className="flex items-center justify-between">
           <div>
-            <p className="text-sm text-cute-pink-600 mb-1">Your Current XP</p>
-            <p className="text-4xl font-bold text-cute-purple-700">{userXp} XP</p>
+            <p className="text-sm text-warm-terracotta-600 mb-1">Your Current XP</p>
+            <p className="text-4xl font-bold text-warm-brown-800">{userXp} XP</p>
           </div>
           {nextReward && (
             <div className="text-right">
-              <p className="text-sm text-gray-500 mb-1">Next Reward At</p>
-              <p className="text-2xl font-bold text-cute-pink-600">{nextReward.xp_required} XP</p>
+              <p className="text-sm text-warm-brown-400 mb-1">Next Reward At</p>
+              <p className="text-2xl font-bold text-warm-terracotta-600">{nextReward.xp_required} XP</p>
             </div>
           )}
         </div>
         {maxXp > 0 && (
           <>
-            <div className="progress-cute mt-4">
-              <div
-                className="progress-fill bg-gradient-to-r from-cute-pink-400 to-cute-purple-400"
-                style={{ width: `${Math.min((userXp / maxXp) * 100, 100)}%` }}
-              />
+            <div className="progress-warm mt-4">
+              <div className="progress-warm-fill" style={{ width: `${Math.min((userXp / maxXp) * 100, 100)}%` }} />
             </div>
-            <p className="text-xs text-cute-pink-600 mt-2 text-center">
+            <p className="text-xs text-warm-terracotta-600 mt-2 text-center">
               {Math.max(maxXp - userXp, 0)} XP away from the ultimate surprise! 🌟
             </p>
           </>
@@ -78,9 +75,9 @@ const Rewards = () => {
       </div>
 
       {rewards.length === 0 ? (
-        <div className="card-cute text-center py-12">
-          <Gift className="w-12 h-12 mx-auto mb-3 text-cute-pink-300" />
-          <p className="text-gray-500">No rewards uploaded yet — check back soon! 💕</p>
+        <div className="card-warm text-center py-12">
+          <Gift className="w-12 h-12 mx-auto mb-3 text-warm-tan-400" />
+          <p className="text-warm-brown-400">No rewards uploaded yet — check back soon! 💕</p>
         </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -90,26 +87,26 @@ const Rewards = () => {
             return (
               <div
                 key={reward.id}
-                className={`card-cute transition-all duration-300 ${
-                  isUnlocked ? 'hover:scale-105 cursor-pointer' : 'opacity-75'
+                className={`card-warm transition-all duration-300 ${
+                  isUnlocked ? 'hover:shadow-lg cursor-pointer' : 'opacity-75'
                 }`}
               >
                 <div className="text-center mb-4">
                   <div
                     className={`w-20 h-20 mx-auto rounded-full flex items-center justify-center text-4xl ${
-                      isUnlocked ? 'bg-gradient-to-br from-cute-pink-400 to-cute-purple-400' : 'bg-gray-300'
+                      isUnlocked ? 'bg-warm-terracotta-500' : 'bg-warm-tan-200'
                     }`}
                   >
-                    {isUnlocked ? (reward.media_type === 'video' ? '🎥' : '🖼️') : <Lock className="w-8 h-8 text-gray-500" />}
+                    {isUnlocked ? (reward.media_type === 'video' ? '🎥' : '🖼️') : <Lock className="w-8 h-8 text-warm-brown-400" />}
                   </div>
                 </div>
 
                 <div className="text-center mb-4">
-                  <h3 className="text-lg font-bold text-cute-purple-700 mb-2">{reward.title}</h3>
-                  <p className="text-sm text-gray-600 mb-3">{reward.description}</p>
+                  <h3 className="text-lg font-bold text-warm-brown-800 mb-2">{reward.title}</h3>
+                  <p className="text-sm text-warm-brown-500 mb-3">{reward.description}</p>
                   <div className="flex items-center justify-center gap-2">
-                    <span className="badge-cute badge-pink">{reward.xp_required} XP</span>
-                    <span className="badge-cute badge-purple capitalize">{reward.media_type}</span>
+                    <span className="badge-warm badge-warm-terracotta">{reward.xp_required} XP</span>
+                    <span className="badge-warm badge-warm-sage capitalize">{reward.media_type}</span>
                   </div>
                 </div>
 
@@ -118,7 +115,7 @@ const Rewards = () => {
                     href={reward.media_url}
                     target="_blank"
                     rel="noreferrer"
-                    className="btn-cute btn-primary w-full flex items-center justify-center gap-2"
+                    className="btn-warm btn-warm-primary w-full flex items-center justify-center gap-2"
                   >
                     <Play className="w-4 h-4" />
                     {reward.media_type === 'video' ? 'Watch Now' : 'View Gallery'}
@@ -126,7 +123,7 @@ const Rewards = () => {
                 ) : (
                   <button
                     disabled
-                    className="w-full py-3 px-4 bg-gray-200 text-gray-500 rounded-2xl font-bold cursor-not-allowed flex items-center justify-center gap-2"
+                    className="w-full py-3 px-4 bg-warm-tan-100 text-warm-brown-400 rounded-2xl font-bold cursor-not-allowed flex items-center justify-center gap-2"
                   >
                     <Lock className="w-4 h-4" />
                     Locked
@@ -135,13 +132,13 @@ const Rewards = () => {
 
                 {!isUnlocked && (
                   <div className="mt-3">
-                    <div className="progress-cute">
+                    <div className="progress-warm">
                       <div
-                        className="progress-fill bg-gray-300"
+                        className="h-full rounded-full bg-warm-tan-300"
                         style={{ width: `${Math.min((userXp / reward.xp_required) * 100, 100)}%` }}
                       />
                     </div>
-                    <p className="text-xs text-gray-500 mt-1 text-center">
+                    <p className="text-xs text-warm-brown-400 mt-1 text-center">
                       {reward.xp_required - userXp} XP more needed
                     </p>
                   </div>
@@ -152,11 +149,11 @@ const Rewards = () => {
         </div>
       )}
 
-      <div className="card-cute text-center py-6 bg-gradient-to-r from-cute-peach-50 via-cute-pink-50 to-cute-purple-50">
-        <p className="text-lg text-cute-purple-700">
+      <div className="card-warm text-center py-6">
+        <p className="text-lg text-warm-brown-700">
           💝 <strong>Every XP brings you closer to special surprises!</strong>
         </p>
-        <p className="text-sm text-cute-pink-600 mt-2">
+        <p className="text-sm text-warm-terracotta-600 mt-2">
           Keep studying and unlock all the rewards! I believe in you! 💕
         </p>
       </div>
