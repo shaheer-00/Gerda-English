@@ -68,22 +68,16 @@ const CourseCheckpoint = () => {
   };
 
   if (loading) {
-    return (
-      <div className="-m-8 p-8 min-h-[calc(100vh-2rem)] bg-warm-cream-50">
-        <p className="text-center text-warm-brown-600 font-warm py-12">Loading checkpoint...</p>
-      </div>
-    );
+    return <p className="text-center text-warm-brown-600 font-warm py-12">Loading checkpoint...</p>;
   }
 
   if (!unit || !lesson || !quiz) {
     return (
-      <div className="-m-8 p-8 min-h-[calc(100vh-2rem)] bg-warm-cream-50">
-        <div className="font-warm text-center py-12">
-          <p className="text-warm-brown-600">Checkpoint not found.</p>
-          <Link to="/course" className="text-warm-terracotta-600 underline">
-            Back to course
-          </Link>
-        </div>
+      <div className="font-warm text-center py-12">
+        <p className="text-warm-brown-600">Checkpoint not found.</p>
+        <Link to="/course" className="text-warm-terracotta-600 underline">
+          Back to course
+        </Link>
       </div>
     );
   }
@@ -93,8 +87,7 @@ const CourseCheckpoint = () => {
   const passed = percentage >= PASS_THRESHOLD;
 
   return (
-    <div className="-m-8 p-8 min-h-[calc(100vh-2rem)] bg-warm-cream-50">
-      <div className="space-y-6 font-warm">
+    <div className="space-y-6 font-warm">
       <div>
         <p className="text-sm text-warm-terracotta-600 font-semibold">{lesson.title}</p>
         <h2 className="text-3xl font-bold text-warm-brown-800">Checkpoint</h2>
@@ -179,7 +172,6 @@ const CourseCheckpoint = () => {
           )}
         </>
       )}
-      </div>
     </div>
   );
 };

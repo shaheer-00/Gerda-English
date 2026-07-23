@@ -49,20 +49,17 @@ const CourseLesson = () => {
 
   if (!unit || !lesson) {
     return (
-      <div className="-m-8 p-8 min-h-[calc(100vh-2rem)] bg-warm-cream-50">
-        <div className="font-warm text-center py-12">
-          <p className="text-warm-brown-600">Lesson not found.</p>
-          <Link to="/course" className="text-warm-terracotta-600 underline">
-            Back to course
-          </Link>
-        </div>
+      <div className="font-warm text-center py-12">
+        <p className="text-warm-brown-600">Lesson not found.</p>
+        <Link to="/course" className="text-warm-terracotta-600 underline">
+          Back to course
+        </Link>
       </div>
     );
   }
 
   return (
-    <div className="-m-8 p-8 min-h-[calc(100vh-2rem)] bg-warm-cream-50">
-      <div className="space-y-6 font-warm">
+    <div className="space-y-6 font-warm">
       <Link
         to={`/course/${unit.id}`}
         className="inline-flex items-center gap-2 text-warm-terracotta-600 hover:text-warm-terracotta-700"
@@ -146,7 +143,6 @@ const CourseLesson = () => {
       >
         Start Checkpoint →
       </button>
-      </div>
     </div>
   );
 };
