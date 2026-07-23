@@ -32,23 +32,6 @@ const Mistakes = () => {
     }
   };
 
-  const getTypeColor = (type: string) => {
-    switch (type) {
-      case 'reading':
-        return 'from-cute-blue-400 to-cute-mint-400';
-      case 'listening':
-        return 'from-cute-purple-400 to-cute-pink-400';
-      case 'vocabulary':
-        return 'from-cute-peach-400 to-cute-pink-400';
-      case 'spelling':
-        return 'from-cute-blue-400 to-cute-purple-400';
-      case 'grammar':
-        return 'from-cute-mint-400 to-cute-blue-400';
-      default:
-        return 'from-cute-pink-400 to-cute-purple-400';
-    }
-  };
-
   const filteredMistakes = filter === 'all' ? mistakes : mistakes.filter((m) => m.error_type === filter);
 
   const stats = {
@@ -61,43 +44,43 @@ const Mistakes = () => {
   };
 
   if (loading) {
-    return <p className="text-center text-cute-pink-600 py-12">Loading mistakes... 🌸</p>;
+    return <p className="text-center text-warm-brown-600 py-12">Loading mistakes... 🌸</p>;
   }
 
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
-        <h2 className="text-3xl font-bold font-cute text-cute-purple-700 flex items-center gap-3">
+        <h2 className="text-3xl font-bold text-warm-brown-800 flex items-center gap-3">
           <XCircle className="w-8 h-8" />
           My Mistakes Bank 📚
         </h2>
-        <p className="text-cute-pink-600">Learn from mistakes = Get better! 💪</p>
+        <p className="text-warm-terracotta-600">Learn from mistakes = Get better! 💪</p>
       </div>
 
       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
-        <div className="card-cute text-center">
-          <p className="text-3xl font-bold text-cute-purple-700">{stats.total}</p>
-          <p className="text-sm text-gray-500">Total</p>
+        <div className="card-warm text-center">
+          <p className="text-3xl font-bold text-warm-brown-800">{stats.total}</p>
+          <p className="text-sm text-warm-brown-400">Total</p>
         </div>
-        <div className="card-cute text-center bg-gradient-to-br from-cute-blue-50 to-cute-mint-50">
-          <p className="text-3xl font-bold text-cute-blue-700">{stats.reading}</p>
-          <p className="text-sm text-gray-500">Reading</p>
+        <div className="card-warm text-center">
+          <p className="text-3xl font-bold text-warm-terracotta-600">{stats.reading}</p>
+          <p className="text-sm text-warm-brown-400">Reading</p>
         </div>
-        <div className="card-cute text-center bg-gradient-to-br from-cute-purple-50 to-cute-pink-50">
-          <p className="text-3xl font-bold text-cute-purple-700">{stats.listening}</p>
-          <p className="text-sm text-gray-500">Listening</p>
+        <div className="card-warm text-center">
+          <p className="text-3xl font-bold text-warm-terracotta-600">{stats.listening}</p>
+          <p className="text-sm text-warm-brown-400">Listening</p>
         </div>
-        <div className="card-cute text-center bg-gradient-to-br from-cute-peach-50 to-cute-pink-50">
-          <p className="text-3xl font-bold text-cute-peach-700">{stats.vocabulary}</p>
-          <p className="text-sm text-gray-500">Vocabulary</p>
+        <div className="card-warm text-center">
+          <p className="text-3xl font-bold text-warm-sage-600">{stats.vocabulary}</p>
+          <p className="text-sm text-warm-brown-400">Vocabulary</p>
         </div>
-        <div className="card-cute text-center bg-gradient-to-br from-cute-mint-50 to-cute-blue-50">
-          <p className="text-3xl font-bold text-cute-mint-700">{stats.grammar}</p>
-          <p className="text-sm text-gray-500">Grammar</p>
+        <div className="card-warm text-center">
+          <p className="text-3xl font-bold text-warm-sage-600">{stats.grammar}</p>
+          <p className="text-sm text-warm-brown-400">Grammar</p>
         </div>
-        <div className="card-cute text-center bg-gradient-to-br from-cute-blue-50 to-cute-purple-50">
-          <p className="text-3xl font-bold text-cute-blue-700">{stats.spelling}</p>
-          <p className="text-sm text-gray-500">Spelling</p>
+        <div className="card-warm text-center">
+          <p className="text-3xl font-bold text-warm-terracotta-600">{stats.spelling}</p>
+          <p className="text-sm text-warm-brown-400">Spelling</p>
         </div>
       </div>
 
@@ -108,8 +91,8 @@ const Mistakes = () => {
             onClick={() => setFilter(type)}
             className={`px-4 py-2 rounded-full font-semibold transition-all duration-300 ${
               filter === type
-                ? 'bg-gradient-to-r from-cute-pink-400 to-cute-purple-400 text-white shadow-lg'
-                : 'bg-white text-gray-600 hover:bg-cute-pink-50'
+                ? 'bg-warm-terracotta-500 text-white shadow-sm'
+                : 'bg-white text-warm-brown-600 hover:bg-warm-cream-100 border border-warm-tan-200'
             }`}
           >
             {type.charAt(0).toUpperCase() + type.slice(1)}
@@ -119,36 +102,36 @@ const Mistakes = () => {
 
       <div className="space-y-4">
         {filteredMistakes.length === 0 && (
-          <p className="text-center text-gray-500 py-8">No mistakes logged yet — nice! 🌟</p>
+          <p className="text-center text-warm-brown-400 py-8">No mistakes logged yet — nice! 🌟</p>
         )}
         {filteredMistakes.map((mistake) => (
-          <div key={mistake.id} className="card-cute">
+          <div key={mistake.id} className="card-warm">
             <div className="flex items-start gap-4">
-              <div className={`p-3 rounded-2xl bg-gradient-to-br ${getTypeColor(mistake.error_type)} text-white`}>
+              <div className="p-3 rounded-2xl bg-warm-terracotta-500 text-white">
                 {getTypeIcon(mistake.error_type)}
               </div>
               <div className="flex-1">
                 <div className="flex items-center justify-between mb-3">
-                  <span className="badge-cute badge-pink capitalize">{mistake.error_type}</span>
-                  <span className="text-xs text-gray-500">
+                  <span className="badge-warm badge-warm-terracotta capitalize">{mistake.error_type}</span>
+                  <span className="text-xs text-warm-brown-400">
                     {new Date(mistake.created_at).toLocaleDateString()}
                   </span>
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-3">
-                  <div className="p-4 bg-red-50 rounded-xl border-2 border-red-200">
+                  <div className="p-4 bg-red-50 rounded-xl border border-red-200">
                     <p className="text-xs text-red-600 font-bold mb-1">❌ My Answer:</p>
-                    <p className="text-gray-700">{mistake.original_text}</p>
+                    <p className="text-warm-brown-700">{mistake.original_text}</p>
                   </div>
-                  <div className="p-4 bg-green-50 rounded-xl border-2 border-green-200">
-                    <p className="text-xs text-green-600 font-bold mb-1">✅ Correct:</p>
-                    <p className="text-gray-700">{mistake.corrected_text}</p>
+                  <div className="p-4 bg-warm-sage-50 rounded-xl border border-warm-sage-200">
+                    <p className="text-xs text-warm-sage-700 font-bold mb-1">✅ Correct:</p>
+                    <p className="text-warm-brown-700">{mistake.corrected_text}</p>
                   </div>
                 </div>
 
                 {mistake.explanation && (
-                  <div className="p-4 bg-gradient-to-r from-cute-pink-50 to-cute-purple-50 rounded-xl">
-                    <p className="text-sm text-cute-purple-700">
+                  <div className="p-4 bg-warm-cream-100 rounded-xl">
+                    <p className="text-sm text-warm-brown-700">
                       <strong>💡 Explanation:</strong> {mistake.explanation}
                     </p>
                   </div>
@@ -159,11 +142,11 @@ const Mistakes = () => {
         ))}
       </div>
 
-      <div className="card-cute text-center py-6 bg-gradient-to-r from-cute-mint-50 via-cute-blue-50 to-cute-purple-50">
-        <p className="text-lg text-cute-purple-700">
+      <div className="card-warm text-center py-6">
+        <p className="text-lg text-warm-brown-700">
           🌟 <strong>Great job reviewing!</strong> Every mistake you learn from makes you stronger!
         </p>
-        <p className="text-sm text-cute-pink-600 mt-2">
+        <p className="text-sm text-warm-terracotta-600 mt-2">
           Review your mistakes regularly to avoid repeating them in the exam!
         </p>
       </div>
