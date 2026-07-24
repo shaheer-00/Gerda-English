@@ -7,13 +7,13 @@ export default defineConfig({
     react(),
     VitePWA({
       registerType: 'autoUpdate',
-      includeAssets: ['favicon.ico', 'apple-touch-icon.png', 'masked-icon.svg'],
+      includeAssets: ['favicon.svg', 'apple-touch-icon.png', 'masked-icon.svg'],
       manifest: {
         name: 'Gerda English Learning',
         short_name: 'GerdaEnglish',
         description: 'Cute English learning app for IELTS preparation',
-        theme_color: '#f5d0fe',
-        background_color: '#fdf2f8',
+        theme_color: '#c17a4a',
+        background_color: '#fdf8f0',
         display: 'standalone',
         orientation: 'portrait',
         icons: [
