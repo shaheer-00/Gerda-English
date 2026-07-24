@@ -11,7 +11,7 @@ export default defineConfig({
       manifest: {
         name: 'Gerda English Learning',
         short_name: 'GerdaEnglish',
-        description: 'Cute English learning app for IELTS preparation',
+        description: 'English learning app for IELTS preparation',
         theme_color: '#c17a4a',
         background_color: '#fdf8f0',
         display: 'standalone',
@@ -36,23 +36,7 @@ export default defineConfig({
         ]
       },
       workbox: {
-        globPatterns: ['**/*.{js,css,html,ico,png,svg,mp3,wav}'],
-        runtimeCaching: [
-          {
-            urlPattern: /^https:\/\/fonts\.googleapis\.com\/.*/i,
-            handler: 'CacheFirst',
-            options: {
-              cacheName: 'google-fonts-cache',
-              expiration: {
-                maxEntries: 10,
-                maxAgeSeconds: 60 * 60 * 24 * 365
-              },
-              cacheableResponse: {
-                statuses: [0, 200]
-              }
-            }
-          }
-        ]
+        globPatterns: ['**/*.{js,css,html,ico,png,svg,mp3,wav}']
       }
     })
   ],
