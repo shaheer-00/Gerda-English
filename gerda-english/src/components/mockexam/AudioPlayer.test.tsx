@@ -13,14 +13,13 @@ class FakeUtterance {
 
 describe('AudioPlayer', () => {
   beforeEach(() => {
-    // @ts-expect-error jsdom has no real speechSynthesis - stub it for the test
-    window.SpeechSynthesisUtterance = FakeUtterance;
-    // @ts-expect-error jsdom has no real speechSynthesis - stub it for the test
+    // jsdom has no real speechSynthesis - stub it for the test
+    window.SpeechSynthesisUtterance = FakeUtterance as unknown as typeof SpeechSynthesisUtterance;
     window.speechSynthesis = {
       speak: vi.fn((utterance: FakeUtterance) => {
         utterance.onend?.();
       }),
-    };
+    } as unknown as SpeechSynthesis;
   });
 
   it('speaks the script once when played, then disables the button', () => {
