@@ -1,4 +1,4 @@
-import { supabase, Note, Mistake, Quiz, QuizAttempt, Reward, UserProgress, CalendarEvent } from './supabase';
+import { supabase, Note, Mistake, Quiz, QuizAttempt, Reward, UserProgress, CalendarEvent, MockExam, MockExamAttempt } from './supabase';
 
 const USER_ID = 'gerda'; // Simple single-user setup for now
 
@@ -328,6 +328,60 @@ export async function deleteCalendarEvent(id: string): Promise<void> {
     .from('calendar_events')
     .delete()
     .eq('id', id);
-  
+
   if (error) throw error;
+}
+
+// Mock Exam Functions
+export async function getMockExams(): Promise<MockExam[]> {
+  const { data, error } = await supabase
+    .from('mock_exams')
+    .select('*')
+    .order('created_at', { ascending: false });
+
+  if (error) throw error;
+  return data || [];
+}
+
+export async function getMockExamById(id: string): Promise<MockExam | null> {
+  const { data, error } = await supabase
+    .from('mock_exams')
+    .select('*')
+    .eq('id', id)
+    .single();
+
+  if (error && error.code !== 'PGRST116') throw error;
+  return data;
+}
+
+const MOCK_EXAM_XP_REWARD = 300;
+
+export async function submitMockExamAttempt(
+  attempt: Omit<MockExamAttempt, 'id' | 'user_id' | 'completed_at'>
+): Promise<MockExamAttempt> {
+  const attemptData = {
+    ...attempt,
+    user_id: USER_ID,
+    completed_at: new Date().toISOString(),
+  };
+
+  const { data, error } = await supabase
+    .from('mock_exam_attempts')
+    .insert([attemptData])
+    .select()
+    .single();
+
+  if (error) throw error;
+
+  const progress = await getUserProgress();
+  const completedMockExams = progress?.completed_mock_exams || [];
+  if (!completedMockExams.includes(attempt.mock_exam_id)) {
+    await supabase
+      .from('user_progress')
+      .update({ completed_mock_exams: [...completedMockExams, attempt.mock_exam_id] })
+      .eq('user_id', USER_ID);
+    await addXP(MOCK_EXAM_XP_REWARD);
+  }
+
+  return data;
 }
