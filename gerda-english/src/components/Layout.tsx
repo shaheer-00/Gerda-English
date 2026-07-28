@@ -1,28 +1,18 @@
 import { useState, useEffect } from 'react';
 import { Outlet, Link, useLocation } from 'react-router-dom';
 import { BookOpen, Calendar, Trophy, Gift, Settings, Home, Book, XCircle, GraduationCap } from 'lucide-react';
-import { getUserProgress } from '../lib/db';
+import { useUserProgress } from '../context/UserProgressContext';
 import BottomNav from './BottomNav';
 import MoreSheet from './MoreSheet';
 
 const Layout = () => {
   const location = useLocation();
-  const [xp, setXp] = useState(0);
-  const [level, setLevel] = useState(1);
-  const [streak, setStreak] = useState(0);
+  const { progress } = useUserProgress();
   const [showMore, setShowMore] = useState(false);
 
-  useEffect(() => {
-    getUserProgress()
-      .then((progress) => {
-        if (progress) {
-          setXp(progress.total_xp);
-          setLevel(progress.level);
-          setStreak(progress.streak);
-        }
-      })
-      .catch((err) => console.error('Failed to load progress:', err));
-  }, [location.pathname]);
+  const xp = progress?.total_xp ?? 0;
+  const level = progress?.level ?? 1;
+  const streak = progress?.streak ?? 0;
 
   useEffect(() => {
     setShowMore(false);

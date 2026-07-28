@@ -1,36 +1,37 @@
 import { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { units } from '../course/units';
-import { getQuizById, submitQuizAttempt, markQuizCompleted, getUserProgress } from '../lib/db';
+import { getQuizById, submitQuizAttempt, markQuizCompleted } from '../lib/db';
+import { useUserProgress } from '../context/UserProgressContext';
 import { Quiz as QuizType } from '../lib/supabase';
 
 const PASS_THRESHOLD = 60;
 
 const CourseCheckpoint = () => {
   const { unitId, lessonId } = useParams<{ unitId: string; lessonId: string }>();
+  const { progress, loading: progressLoading, refresh } = useUserProgress();
 
   const unit = units.find((u) => u.id === unitId);
   const lesson = unit?.lessons.find((l) => l.id === lessonId);
 
   const [quiz, setQuiz] = useState<QuizType | null>(null);
-  const [loading, setLoading] = useState(true);
+  const [quizLoading, setQuizLoading] = useState(true);
   const [answers, setAnswers] = useState<Record<string, string>>({});
   const [showResults, setShowResults] = useState(false);
   const [submitting, setSubmitting] = useState(false);
-  const [alreadyCompleted, setAlreadyCompleted] = useState(false);
+
+  const loading = quizLoading || progressLoading;
+  const alreadyCompleted = lesson ? (progress?.completed_quizzes ?? []).includes(lesson.checkpointQuizId) : false;
 
   useEffect(() => {
     if (!lesson) {
-      setLoading(false);
+      setQuizLoading(false);
       return;
     }
-    Promise.all([getQuizById(lesson.checkpointQuizId), getUserProgress()])
-      .then(([quizResult, progress]) => {
-        setQuiz(quizResult);
-        setAlreadyCompleted((progress?.completed_quizzes ?? []).includes(lesson.checkpointQuizId));
-      })
+    getQuizById(lesson.checkpointQuizId)
+      .then(setQuiz)
       .catch((err) => console.error('Failed to load checkpoint:', err))
-      .finally(() => setLoading(false));
+      .finally(() => setQuizLoading(false));
   }, [lesson]);
 
   const handleAnswer = (questionId: string, answer: string) => {
@@ -59,6 +60,7 @@ const CourseCheckpoint = () => {
       if (passed) {
         await markQuizCompleted(quiz.id);
       }
+      await refresh();
       setShowResults(true);
     } catch (err) {
       console.error('Failed to submit checkpoint:', err);

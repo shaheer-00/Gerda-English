@@ -1,22 +1,14 @@
-import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { Lock, CheckCircle } from 'lucide-react';
 import { units } from '../course/units';
-import { getUserProgress } from '../lib/db';
+import { useUserProgress } from '../context/UserProgressContext';
 import { isUnitUnlocked, unitProgress } from '../course/progress';
 
 const unitIcons = ['📗', '📙', '📘', '📕'];
 
 const Course = () => {
-  const [completedQuizzes, setCompletedQuizzes] = useState<string[]>([]);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    getUserProgress()
-      .then((progress) => setCompletedQuizzes(progress?.completed_quizzes ?? []))
-      .catch((err) => console.error('Failed to load course progress:', err))
-      .finally(() => setLoading(false));
-  }, []);
+  const { progress, loading } = useUserProgress();
+  const completedQuizzes = progress?.completed_quizzes ?? [];
 
   if (loading) {
     return <p className="text-center text-warm-brown-600 font-warm py-12">Loading your course...</p>;

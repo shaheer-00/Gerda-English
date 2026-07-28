@@ -1,21 +1,21 @@
 import { useState, useEffect } from 'react';
 import { Gift, Play, Lock } from 'lucide-react';
-import { getRewards, getUserProgress, unlockReward } from '../lib/db';
-import { Reward, UserProgress } from '../lib/supabase';
+import { getRewards, unlockReward } from '../lib/db';
+import { useUserProgress } from '../context/UserProgressContext';
+import { Reward } from '../lib/supabase';
 
 const Rewards = () => {
+  const { progress, loading: progressLoading, refresh } = useUserProgress();
   const [rewards, setRewards] = useState<Reward[]>([]);
-  const [progress, setProgress] = useState<UserProgress | null>(null);
-  const [loading, setLoading] = useState(true);
+  const [rewardsLoading, setRewardsLoading] = useState(true);
+
+  const loading = rewardsLoading || progressLoading;
 
   useEffect(() => {
-    Promise.all([getRewards(), getUserProgress()])
-      .then(([rewardsData, progressData]) => {
-        setRewards(rewardsData);
-        setProgress(progressData);
-      })
+    getRewards()
+      .then(setRewards)
       .catch((err) => console.error('Failed to load rewards:', err))
-      .finally(() => setLoading(false));
+      .finally(() => setRewardsLoading(false));
   }, []);
 
   const userXp = progress?.total_xp ?? 0;
@@ -23,11 +23,13 @@ const Rewards = () => {
 
   useEffect(() => {
     if (!progress) return;
-    rewards.forEach((reward) => {
-      if (userXp >= reward.xp_required && !unlockedRewards.includes(reward.id)) {
-        unlockReward(reward.id).catch((err) => console.error('Failed to unlock reward:', err));
-      }
-    });
+    const toUnlock = rewards.filter(
+      (reward) => userXp >= reward.xp_required && !unlockedRewards.includes(reward.id)
+    );
+    if (toUnlock.length === 0) return;
+    Promise.all(toUnlock.map((reward) => unlockReward(reward.id)))
+      .then(() => refresh())
+      .catch((err) => console.error('Failed to unlock reward:', err));
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [rewards, progress]);
 

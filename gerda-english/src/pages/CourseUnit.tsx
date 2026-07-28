@@ -1,21 +1,13 @@
-import { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { ArrowLeft, Lock, CheckCircle, ChevronRight } from 'lucide-react';
 import { units } from '../course/units';
-import { getUserProgress } from '../lib/db';
+import { useUserProgress } from '../context/UserProgressContext';
 import { isLessonUnlocked } from '../course/progress';
 
 const CourseUnit = () => {
   const { unitId } = useParams<{ unitId: string }>();
-  const [completedQuizzes, setCompletedQuizzes] = useState<string[]>([]);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    getUserProgress()
-      .then((progress) => setCompletedQuizzes(progress?.completed_quizzes ?? []))
-      .catch((err) => console.error('Failed to load course progress:', err))
-      .finally(() => setLoading(false));
-  }, []);
+  const { progress, loading } = useUserProgress();
+  const completedQuizzes = progress?.completed_quizzes ?? [];
 
   const unitIndex = units.findIndex((u) => u.id === unitId);
   const unit = units[unitIndex];
