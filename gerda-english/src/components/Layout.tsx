@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Outlet, Link, useLocation } from 'react-router-dom';
-import { BookOpen, Calendar, Trophy, Gift, Settings, Home, Book, XCircle, GraduationCap } from 'lucide-react';
+import { BookOpen, Calendar, Trophy, Gift, Settings, Home, Book, XCircle, GraduationCap, Headphones } from 'lucide-react';
 import { useUserProgress } from '../context/UserProgressContext';
 import BottomNav from './BottomNav';
 import MoreSheet from './MoreSheet';
@@ -25,6 +25,7 @@ const Layout = () => {
     { path: '/calendar', icon: Calendar, label: 'Calendar' },
     { path: '/mistakes', icon: XCircle, label: 'Mistakes' },
     { path: '/quiz', icon: Book, label: 'Quiz' },
+    { path: '/mock-exam', icon: Headphones, label: 'Mock Exam' },
     { path: '/rewards', icon: Gift, label: 'Rewards' },
   ];
 
@@ -32,6 +33,7 @@ const Layout = () => {
     { path: '/notebook', icon: BookOpen, label: 'Notebook' },
     { path: '/calendar', icon: Calendar, label: 'Calendar' },
     { path: '/mistakes', icon: XCircle, label: 'Mistakes' },
+    { path: '/mock-exam', icon: Headphones, label: 'Mock Exam' },
     { path: '/admin', icon: Settings, label: 'Admin Panel' },
   ];
 

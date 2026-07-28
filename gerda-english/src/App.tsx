@@ -11,6 +11,7 @@ import Notebook from './pages/Notebook';
 import Calendar from './pages/Calendar';
 import Mistakes from './pages/Mistakes';
 import Quiz from './pages/Quiz';
+import MockExam from './pages/MockExam';
 import Rewards from './pages/Rewards';
 import AdminDashboard from './pages/AdminDashboard';
 
@@ -29,6 +30,7 @@ function App() {
             <Route path="calendar" element={<Calendar />} />
             <Route path="mistakes" element={<Mistakes />} />
             <Route path="quiz" element={<Quiz />} />
+            <Route path="mock-exam" element={<MockExam />} />
             <Route path="rewards" element={<Rewards />} />
             <Route
               path="admin"
