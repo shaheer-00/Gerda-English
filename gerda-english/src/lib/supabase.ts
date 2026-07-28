@@ -89,6 +89,7 @@ export interface UserProgress {
   last_activity: string;
   completed_quizzes: string[];
   unlocked_rewards: string[];
+  completed_mock_exams?: string[];
 }
 
 export interface CalendarEvent {
@@ -100,4 +101,50 @@ export interface CalendarEvent {
   completed: boolean;
   xp_reward: number;
   created_at: string;
+}
+
+export interface MockExamQuestion {
+  id: string;
+  question_text: string;
+  type: 'multiple_choice' | 'fill_blank';
+  options?: string[];
+  correct_answer: string;
+  explanation?: string;
+}
+
+export interface MockExamSection {
+  type: 'listening' | 'reading';
+  section_number: number;
+  title: string;
+  instructions: string;
+  passage_text?: string;
+  listening_script?: string;
+  questions: MockExamQuestion[];
+}
+
+export interface MockExam {
+  id: string;
+  title: string;
+  module: 'academic';
+  sections: MockExamSection[];
+  created_at: string;
+}
+
+export interface MockExamSectionScore {
+  raw: number;
+  band: number;
+}
+
+export interface MockExamAttempt {
+  id: string;
+  user_id: string;
+  mock_exam_id: string;
+  section_scores: {
+    listening: MockExamSectionScore;
+    reading: MockExamSectionScore;
+  };
+  estimated_band: number;
+  answers: Record<string, string>;
+  time_spent_seconds: number;
+  completed_at: string;
 }
