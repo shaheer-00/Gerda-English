@@ -79,3 +79,25 @@ body {
 .badge-warm-sage {
   @apply bg-warm-sage-100 text-warm-sage-700;
 }
+
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+.skeleton-warm {
+  background: linear-gradient(90deg, #f3e5c8 25%, #fdf8f0 50%, #f3e5c8 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .skeleton-warm {
+    animation: none;
+    background: #f3e5c8;
+  }
+}
