@@ -4,6 +4,7 @@ import { BookOpen, Calendar, Trophy, Gift, Settings, Home, Book, XCircle, Gradua
 import { useUserProgress } from '../context/UserProgressContext';
 import BottomNav from './BottomNav';
 import MoreSheet from './MoreSheet';
+import PageTransition from './PageTransition';
 
 const Layout = () => {
   const location = useLocation();
@@ -93,7 +94,9 @@ const Layout = () => {
       </aside>
 
       <main className="flex-1 overflow-y-auto p-4 pb-24 md:p-8 md:pb-8 bg-warm-cream-50">
-        <Outlet />
+        <PageTransition>
+          <Outlet />
+        </PageTransition>
       </main>
 
       <BottomNav onMore={() => setShowMore(true)} />
