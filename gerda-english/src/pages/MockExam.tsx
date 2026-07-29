@@ -7,6 +7,7 @@ import { academicReadingBand, estimatedOverallBand, listeningBand } from '../lib
 import { isCorrectAnswer } from '../lib/scoreAnswer';
 import ListeningSection from '../components/mockexam/ListeningSection';
 import ReadingSection from '../components/mockexam/ReadingSection';
+import Skeleton from '../components/Skeleton';
 
 type Phase = 'intro' | 'listening' | 'reading' | 'results';
 
@@ -80,7 +81,12 @@ const MockExam = () => {
   };
 
   if (loading) {
-    return <p className="text-center text-warm-brown-600 py-12">Loading mock exam... 📝</p>;
+    return (
+      <div className="space-y-6">
+        <Skeleton className="h-8 w-56" />
+        <Skeleton className="h-48" />
+      </div>
+    );
   }
 
   if (!exam) {

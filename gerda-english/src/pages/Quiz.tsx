@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { Book, CheckCircle, XCircle } from 'lucide-react';
 import { getQuizzes, submitQuizAttempt } from '../lib/db';
 import { Quiz as QuizType } from '../lib/supabase';
+import Skeleton from '../components/Skeleton';
 
 const Quiz = () => {
   const [currentQuiz, setCurrentQuiz] = useState<QuizType | null>(null);
@@ -53,7 +54,17 @@ const Quiz = () => {
   };
 
   if (loading) {
-    return <p className="text-center text-warm-brown-600 py-12">Loading quiz... 🌸</p>;
+    return (
+      <div className="space-y-6">
+        <Skeleton className="h-8 w-48" />
+        <Skeleton className="h-28" />
+        <div className="space-y-6">
+          <Skeleton className="h-32" />
+          <Skeleton className="h-32" />
+          <Skeleton className="h-32" />
+        </div>
+      </div>
+    );
   }
 
   if (!currentQuiz) {

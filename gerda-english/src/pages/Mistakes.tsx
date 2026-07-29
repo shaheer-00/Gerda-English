@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { XCircle, BookOpen, Headphones, Eye, PenTool, SpellCheck } from 'lucide-react';
 import { getMistakes } from '../lib/db';
 import { Mistake } from '../lib/supabase';
+import Skeleton from '../components/Skeleton';
 
 const Mistakes = () => {
   const [filter, setFilter] = useState('all');
@@ -44,7 +45,23 @@ const Mistakes = () => {
   };
 
   if (loading) {
-    return <p className="text-center text-warm-brown-600 py-12">Loading mistakes... 🌸</p>;
+    return (
+      <div className="space-y-6">
+        <Skeleton className="h-8 w-56" />
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
+          <Skeleton className="h-20" />
+          <Skeleton className="h-20" />
+          <Skeleton className="h-20" />
+          <Skeleton className="h-20" />
+          <Skeleton className="h-20" />
+          <Skeleton className="h-20" />
+        </div>
+        <div className="space-y-4">
+          <Skeleton className="h-32" />
+          <Skeleton className="h-32" />
+        </div>
+      </div>
+    );
   }
 
   return (

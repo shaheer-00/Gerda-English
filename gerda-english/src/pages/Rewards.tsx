@@ -3,6 +3,7 @@ import { Gift, Play, Lock } from 'lucide-react';
 import { getRewards, unlockReward } from '../lib/db';
 import { useUserProgress } from '../context/UserProgressContext';
 import { Reward } from '../lib/supabase';
+import Skeleton from '../components/Skeleton';
 
 const Rewards = () => {
   const { progress, loading: progressLoading, refresh } = useUserProgress();
@@ -39,7 +40,17 @@ const Rewards = () => {
   const maxXp = rewards.length ? Math.max(...rewards.map((r) => r.xp_required)) : 0;
 
   if (loading) {
-    return <p className="text-center text-warm-brown-600 py-12">Loading rewards... 🌸</p>;
+    return (
+      <div className="space-y-6">
+        <Skeleton className="h-8 w-48" />
+        <Skeleton className="h-28" />
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <Skeleton className="h-64" />
+          <Skeleton className="h-64" />
+          <Skeleton className="h-64" />
+        </div>
+      </div>
+    );
   }
 
   return (

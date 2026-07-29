@@ -3,6 +3,7 @@ import { ArrowLeft, Lock, CheckCircle, ChevronRight } from 'lucide-react';
 import { units } from '../course/units';
 import { useUserProgress } from '../context/UserProgressContext';
 import { isLessonUnlocked } from '../course/progress';
+import Skeleton from '../components/Skeleton';
 
 const CourseUnit = () => {
   const { unitId } = useParams<{ unitId: string }>();
@@ -13,7 +14,21 @@ const CourseUnit = () => {
   const unit = units[unitIndex];
 
   if (loading) {
-    return <p className="text-center text-warm-brown-600 font-warm py-12">Loading unit...</p>;
+    return (
+      <div className="space-y-6 font-warm">
+        <Skeleton className="h-5 w-40" />
+        <div className="space-y-2">
+          <Skeleton className="h-8 w-56" />
+          <Skeleton className="h-5 w-72" />
+        </div>
+        <div className="space-y-3">
+          <Skeleton className="h-16" />
+          <Skeleton className="h-16" />
+          <Skeleton className="h-16" />
+          <Skeleton className="h-16" />
+        </div>
+      </div>
+    );
   }
 
   if (!unit) {

@@ -2,6 +2,7 @@ import { useState, useEffect, FormEvent } from 'react';
 import { Calendar as CalendarIcon, Plus, CheckCircle } from 'lucide-react';
 import { getCalendarEvents, createCalendarEvent, updateCalendarEvent } from '../lib/db';
 import { CalendarEvent } from '../lib/supabase';
+import Skeleton from '../components/Skeleton';
 
 const toDateKey = (year: number, month: number, day: number) =>
   `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
@@ -73,7 +74,15 @@ const Calendar = () => {
   const monthLabel = currentDate.toLocaleString('en-US', { month: 'long', year: 'numeric' });
 
   if (loading) {
-    return <p className="text-center text-warm-brown-600 py-12">Loading calendar... 🌸</p>;
+    return (
+      <div className="space-y-6">
+        <Skeleton className="h-8 w-56" />
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          <Skeleton className="h-96 lg:col-span-2" />
+          <Skeleton className="h-96" />
+        </div>
+      </div>
+    );
   }
 
   return (

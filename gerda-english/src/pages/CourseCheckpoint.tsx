@@ -4,6 +4,7 @@ import { units } from '../course/units';
 import { getQuizById, submitQuizAttempt, markQuizCompleted } from '../lib/db';
 import { useUserProgress } from '../context/UserProgressContext';
 import { Quiz as QuizType } from '../lib/supabase';
+import Skeleton from '../components/Skeleton';
 
 const PASS_THRESHOLD = 60;
 
@@ -70,7 +71,19 @@ const CourseCheckpoint = () => {
   };
 
   if (loading) {
-    return <p className="text-center text-warm-brown-600 font-warm py-12">Loading checkpoint...</p>;
+    return (
+      <div className="space-y-6 font-warm">
+        <div className="space-y-2">
+          <Skeleton className="h-5 w-40" />
+          <Skeleton className="h-8 w-48" />
+        </div>
+        <div className="space-y-4">
+          <Skeleton className="h-32" />
+          <Skeleton className="h-32" />
+          <Skeleton className="h-32" />
+        </div>
+      </div>
+    );
   }
 
   if (!unit || !lesson || !quiz) {

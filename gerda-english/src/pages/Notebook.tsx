@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { Save, Search, BookOpen, Plus, Trash2 } from 'lucide-react';
 import { getNotes, saveNote, deleteNote } from '../lib/db';
 import { Note } from '../lib/supabase';
+import Skeleton from '../components/Skeleton';
 
 interface WordDefinition {
   word: string;
@@ -110,7 +111,18 @@ const Notebook = () => {
   );
 
   if (loading) {
-    return <p className="text-center text-warm-brown-600 py-12">Loading notebook... 🌸</p>;
+    return (
+      <div className="space-y-6">
+        <Skeleton className="h-8 w-52" />
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          <div className="lg:col-span-2 space-y-4">
+            <Skeleton className="h-64" />
+            <Skeleton className="h-40" />
+          </div>
+          <Skeleton className="h-96" />
+        </div>
+      </div>
+    );
   }
 
   return (

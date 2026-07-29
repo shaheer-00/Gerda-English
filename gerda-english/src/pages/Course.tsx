@@ -3,6 +3,7 @@ import { Lock, CheckCircle } from 'lucide-react';
 import { units } from '../course/units';
 import { useUserProgress } from '../context/UserProgressContext';
 import { isUnitUnlocked, unitProgress } from '../course/progress';
+import Skeleton from '../components/Skeleton';
 
 const unitIcons = ['📗', '📙', '📘', '📕'];
 
@@ -11,7 +12,20 @@ const Course = () => {
   const completedQuizzes = progress?.completed_quizzes ?? [];
 
   if (loading) {
-    return <p className="text-center text-warm-brown-600 font-warm py-12">Loading your course...</p>;
+    return (
+      <div className="space-y-6 font-warm">
+        <div className="space-y-2">
+          <Skeleton className="h-8 w-64" />
+          <Skeleton className="h-5 w-48" />
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <Skeleton className="h-32" />
+          <Skeleton className="h-32" />
+          <Skeleton className="h-32" />
+          <Skeleton className="h-32" />
+        </div>
+      </div>
+    );
   }
 
   return (
