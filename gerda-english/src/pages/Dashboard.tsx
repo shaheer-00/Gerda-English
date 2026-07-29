@@ -1,6 +1,9 @@
 import { useState, useEffect } from 'react';
+import { motion } from 'framer-motion';
 import { TrendingUp, BookOpen, Award } from 'lucide-react';
 import { getNotes, getMistakes, getQuizAttempts } from '../lib/db';
+import { useCountUp } from '../hooks/useCountUp';
+import Skeleton from '../components/Skeleton';
 
 interface ActivityItem {
   id: string;
@@ -17,6 +20,13 @@ const encouragementMessages = [
   "Your hard work is paying off! 🎉",
 ];
 
+const cardMotionProps = {
+  initial: { opacity: 0, y: 16 },
+  animate: { opacity: 1, y: 0 },
+  whileHover: { y: -2, boxShadow: '0 8px 20px -6px rgba(92, 68, 38, 0.18)' },
+  whileTap: { scale: 0.98 },
+};
+
 const Dashboard = () => {
   const [noteCount, setNoteCount] = useState(0);
   const [mistakeCount, setMistakeCount] = useState(0);
@@ -25,6 +35,9 @@ const Dashboard = () => {
   const [randomMessage] = useState(
     () => encouragementMessages[Math.floor(Math.random() * encouragementMessages.length)]
   );
+
+  const noteCountDisplay = useCountUp(noteCount);
+  const mistakeCountDisplay = useCountUp(mistakeCount);
 
   useEffect(() => {
     Promise.all([getNotes(), getMistakes(), getQuizAttempts()])
@@ -63,7 +76,23 @@ const Dashboard = () => {
   }, []);
 
   if (loading) {
-    return <p className="text-center text-warm-brown-600 py-12">Loading dashboard... 🌸</p>;
+    return (
+      <div className="space-y-8">
+        <div className="text-center py-8 space-y-3">
+          <Skeleton className="h-10 w-80 mx-auto" />
+          <Skeleton className="h-6 w-56 mx-auto" />
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <Skeleton className="h-24" />
+          <Skeleton className="h-24" />
+          <Skeleton className="h-24" />
+        </div>
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <Skeleton className="h-64" />
+          <Skeleton className="h-64" />
+        </div>
+      </div>
+    );
   }
 
   return (
@@ -74,31 +103,31 @@ const Dashboard = () => {
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        <div className="card-warm">
+        <motion.div className="card-warm" {...cardMotionProps} transition={{ delay: 0 * 0.08, duration: 0.3 }}>
           <div className="flex items-center gap-4">
             <div className="p-3 bg-warm-terracotta-500 rounded-2xl">
               <BookOpen className="w-8 h-8 text-white" />
             </div>
             <div>
               <p className="text-sm text-warm-brown-400">Notes Created</p>
-              <p className="text-2xl font-bold text-warm-brown-800">{noteCount}</p>
+              <p className="text-2xl font-bold text-warm-brown-800">{noteCountDisplay}</p>
             </div>
           </div>
-        </div>
+        </motion.div>
 
-        <div className="card-warm">
+        <motion.div className="card-warm" {...cardMotionProps} transition={{ delay: 1 * 0.08, duration: 0.3 }}>
           <div className="flex items-center gap-4">
             <div className="p-3 bg-warm-sage-500 rounded-2xl">
               <TrendingUp className="w-8 h-8 text-white" />
             </div>
             <div>
               <p className="text-sm text-warm-brown-400">Mistakes Logged</p>
-              <p className="text-2xl font-bold text-warm-brown-800">{mistakeCount}</p>
+              <p className="text-2xl font-bold text-warm-brown-800">{mistakeCountDisplay}</p>
             </div>
           </div>
-        </div>
+        </motion.div>
 
-        <div className="card-warm">
+        <motion.div className="card-warm" {...cardMotionProps} transition={{ delay: 2 * 0.08, duration: 0.3 }}>
           <div className="flex items-center gap-4">
             <div className="p-3 bg-warm-terracotta-500 rounded-2xl">
               <Award className="w-8 h-8 text-white" />
@@ -108,11 +137,11 @@ const Dashboard = () => {
               <p className="text-2xl font-bold text-warm-brown-800">{activities.length}</p>
             </div>
           </div>
-        </div>
+        </motion.div>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <div className="card-warm">
+        <motion.div className="card-warm" {...cardMotionProps} transition={{ delay: 3 * 0.08, duration: 0.3 }}>
           <h3 className="text-xl font-bold text-warm-brown-800 mb-4">Recent Activity 📝</h3>
           <div className="space-y-3">
             {activities.length === 0 && (
@@ -130,9 +159,13 @@ const Dashboard = () => {
               </div>
             ))}
           </div>
-        </div>
+        </motion.div>
 
-        <div className="card-warm bg-warm-tan-50">
+        <motion.div
+          className="card-warm bg-warm-tan-50"
+          {...cardMotionProps}
+          transition={{ delay: 4 * 0.08, duration: 0.3 }}
+        >
           <h3 className="text-xl font-bold text-warm-brown-800 mb-4">💡 Daily Tip</h3>
           <div className="space-y-4">
             <p className="text-warm-brown-700 leading-relaxed">
@@ -149,16 +182,20 @@ const Dashboard = () => {
               </p>
             </div>
           </div>
-        </div>
+        </motion.div>
       </div>
 
-      <div className="card-warm text-center py-8">
+      <motion.div
+        className="card-warm text-center py-8"
+        {...cardMotionProps}
+        transition={{ delay: 5 * 0.08, duration: 0.3 }}
+      >
         <p className="text-2xl font-warm text-warm-brown-800 mb-2">
           "Believe in yourself and all that you are."
         </p>
         <p className="text-warm-terracotta-600">- Christian D. Larson</p>
         <p className="mt-4 text-lg text-warm-brown-700">💕 You've got this! 💕</p>
-      </div>
+      </motion.div>
     </div>
   );
 };
