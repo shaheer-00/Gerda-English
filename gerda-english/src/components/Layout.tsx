@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Outlet, Link, useLocation } from 'react-router-dom';
+import { motion } from 'framer-motion';
 import { BookOpen, Calendar, Trophy, Gift, Settings, Home, Book, XCircle, GraduationCap, Headphones } from 'lucide-react';
 import { useUserProgress } from '../context/UserProgressContext';
 import BottomNav from './BottomNav';
@@ -71,12 +72,17 @@ const Layout = () => {
               <Link
                 key={item.path}
                 to={item.path}
-                className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 ${
-                  isActive
-                    ? 'bg-warm-terracotta-500 text-white shadow-sm'
-                    : 'text-warm-brown-600 hover:bg-warm-cream-100'
+                className={`relative flex items-center gap-3 px-4 py-3 rounded-xl transition-colors duration-200 ${
+                  isActive ? 'text-white' : 'text-warm-brown-600 hover:bg-warm-cream-100'
                 }`}
               >
+                {isActive && (
+                  <motion.div
+                    layoutId="desktop-nav-indicator"
+                    className="absolute inset-0 bg-warm-terracotta-500 rounded-xl shadow-sm -z-10"
+                    transition={{ type: 'spring', stiffness: 500, damping: 35 }}
+                  />
+                )}
                 <Icon className="w-5 h-5" />
                 <span className="font-semibold">{item.label}</span>
               </Link>
