@@ -25,7 +25,7 @@ const BottomNav = ({ onMore }: BottomNavProps) => {
           <Link
             key={item.path}
             to={item.path}
-            className="relative flex-1 flex flex-col items-center justify-center gap-1 py-2 text-xs font-semibold"
+            className="relative isolate flex-1 flex flex-col items-center justify-center gap-1 py-2 text-xs font-semibold"
           >
             {isActive && (
               <motion.div

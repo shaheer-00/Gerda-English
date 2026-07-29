@@ -77,7 +77,7 @@ const Layout = () => {
               <Link
                 key={item.path}
                 to={item.path}
-                className={`relative flex items-center gap-3 px-4 py-3 rounded-xl transition-colors duration-200 ${
+                className={`relative isolate flex items-center gap-3 px-4 py-3 rounded-xl transition-colors duration-200 ${
                   isActive ? 'text-white' : 'text-warm-brown-600 hover:bg-warm-cream-100'
                 }`}
               >
