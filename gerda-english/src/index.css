@@ -9,7 +9,7 @@
 }
 
 body {
-  font-family: Georgia, Cambria, 'Times New Roman', serif;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Inter, Roboto, sans-serif;
   background: linear-gradient(135deg, #fefcf8 0%, #fdf8f0 50%, #f8ecd8 100%);
   min-height: 100vh;
   color: #5c4426;
