@@ -55,7 +55,12 @@ const Layout = () => {
             <Trophy className="w-6 h-6 text-warm-terracotta-400" />
           </div>
           <div className="progress-warm mb-2">
-            <div className="progress-warm-fill" style={{ width: `${xp % 100}%` }} />
+            <motion.div
+              className="progress-warm-fill"
+              initial={false}
+              animate={{ width: `${xp % 100}%` }}
+              transition={{ type: 'spring', stiffness: 120, damping: 20 }}
+            />
           </div>
           <p className="text-xs text-warm-brown-500">{xp} XP total</p>
           <div className="mt-3 flex items-center justify-between">

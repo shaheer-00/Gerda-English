@@ -65,7 +65,7 @@ body {
 }
 
 .progress-warm-fill {
-  @apply h-full rounded-full transition-all duration-500 ease-out bg-warm-terracotta-500;
+  @apply h-full rounded-full bg-warm-terracotta-500;
 }
 
 .badge-warm {
