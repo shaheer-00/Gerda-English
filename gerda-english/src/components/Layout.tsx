@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Outlet, Link, useLocation } from 'react-router-dom';
-import { motion } from 'framer-motion';
+import { AnimatePresence, motion } from 'framer-motion';
 import { BookOpen, Calendar, Trophy, Gift, Settings, Home, Book, XCircle, GraduationCap, Headphones } from 'lucide-react';
 import { useUserProgress } from '../context/UserProgressContext';
 import BottomNav from './BottomNav';
@@ -106,7 +106,9 @@ const Layout = () => {
       </main>
 
       <BottomNav onMore={() => setShowMore(true)} />
-      {showMore && <MoreSheet items={moreItems} onClose={() => setShowMore(false)} />}
+      <AnimatePresence>
+        {showMore && <MoreSheet items={moreItems} onClose={() => setShowMore(false)} />}
+      </AnimatePresence>
     </div>
   );
 };
